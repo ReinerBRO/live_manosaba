@@ -1,0 +1,77 @@
+{
+    "export_dir": "../characters/Anan",
+    "output_dir_figure": "output/AnAn",
+    "output_dir_sprite": "output/AnAn/sprite",
+    "composite_keys_list": [
+        [
+            "ArmR3",
+            "ArmL3",
+            "Flushed"
+        ],
+        [
+            "ArmR4",
+            "ArmL4",
+            "Default"
+        ],
+        [
+            "ArmR5",
+            "ArmL11",
+            "Flushed"
+        ],
+        [
+            "Arms1",
+            "ArmR1-Option-All",
+            "Default"
+        ]
+    ],
+    "composite_keys_list_0": [
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Cry"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Angry"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Flushed"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Fearful"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Smile"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Pensive"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Surprised"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "ArmR1-Option-All",
+            "Default"
+        ]
+    ]
+}

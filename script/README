@@ -1,0 +1,21 @@
+## One-Click Run
+`python run.py -d <your_export_dir>`
+
+## Run with Custom Config
+`python run.py -c <config_file> -a`
+
+## Learn More Options
+`python run.py -h`  
+`python assemble.py -h`  
+`python breakup.py -h`  
+`python config.py -h`  
+
+## About Each Scripts
+- `assemble.py`: 将角色的各个部件合成完整立绘的综合性脚本。
+- `blend.py`: 对图层抽象的实现，支持图层堆叠、混合模式、剪辑蒙版功能。
+- `breakup.py`: 将原始Texture资产拆分为独立部件。
+- `config.py`: 生成配置文件。
+- `expstruct.py`: 解析AssetRipper导出文件结构，定位与索引关键资源。
+- `objtree.py`: 还原Unity的GameObject层级结构。
+- `ptimer.py`: 简洁的性能计时器。
+- `run.py`: 实现高度自动化的一键导出脚本，集成了`config.py`、`assemble.py`和`breakup.py`的功能。

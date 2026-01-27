@@ -1,0 +1,47 @@
+{
+    "export_dir": "../characters/Hanna",
+    "output_dir_figure": "output/Hanna",
+    "output_dir_sprite": "output/Hanna/sprite",
+    "composite_keys_list": [
+        [
+            "ArmL1",
+            "ArmR3",
+            "Fearful"
+        ],
+        [
+            "ArmL1",
+            "ArmR3",
+            "Flushed"
+        ],
+        [
+            "ArmL1",
+            "ArmR3",
+            "Cry"
+        ],
+        [
+            "ArmL1",
+            "ArmR3",
+            "Default"
+        ],
+        [
+            "ArmL1",
+            "ArmR3",
+            "Smile"
+        ],
+        [
+            "ArmL1",
+            "ArmR3",
+            "Angry"
+        ],
+        [
+            "ArmL1",
+            "ArmR3",
+            "Surprised"
+        ],
+        [
+            "ArmL1",
+            "ArmR3",
+            "Pensive"
+        ]
+    ]
+}

@@ -1,0 +1,24 @@
+# OS / editor
+.DS_Store
+.idea
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# Node / Vite
+node_modules/
+dist/
+web_app/node_modules/
+web_app/dist/
+web_app/.turbo/
+
+# Large Assets
+asset/
+script.zip
+
+# Logs
+*.log
+logs/
+

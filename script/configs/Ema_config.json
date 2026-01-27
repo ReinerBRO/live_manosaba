@@ -1,0 +1,64 @@
+{
+    "export_dir": "../characters/Ema",
+    "output_dir_figure": "output/Ema",
+    "output_dir_sprite": "output/Ema/sprite",
+    "composite_keys_list": [
+        [
+            "ArmR4",
+            "ArmL4",
+            "Flushed"
+        ],
+        [
+            "ArmR5",
+            "ArmL3",
+            "Flushed"
+        ]
+    ],
+    "composite_keys_list_0": [
+        [
+            "ArmR1",
+            "ArmL1",
+            "Flushed"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Smile"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Default"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Cry"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Pensive"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Surprised"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Fearful"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Determined2"
+        ],
+        [
+            "ArmR1",
+            "ArmL1",
+            "Angry"
+        ]
+    ]
+}

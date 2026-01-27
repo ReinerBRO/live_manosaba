@@ -1,0 +1,47 @@
+{
+    "export_dir": "../characters/miria",
+    "output_dir_figure": "output/Miria",
+    "output_dir_sprite": "output/Miria/sprite",
+    "composite_keys_list": [
+        [
+            "ArmL1",
+            "ArmR1",
+            "Default"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Fearful"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Cry"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Angry"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Surprised"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Smile"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Pensive"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Flushed"
+        ]
+    ]
+}

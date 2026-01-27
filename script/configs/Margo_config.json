@@ -1,0 +1,47 @@
+{
+    "export_dir": "../characters/Margo",
+    "output_dir_figure": "output/Margo",
+    "output_dir_sprite": "output/Margo/sprite",
+    "composite_keys_list": [
+        [
+            "ArmL1",
+            "ArmR1",
+            "Pensive"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Surprised"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Flushed"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Smile"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Angry"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Cry"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Default"
+        ],
+        [
+            "ArmL1",
+            "ArmR1",
+            "Fearful"
+        ]
+    ]
+}

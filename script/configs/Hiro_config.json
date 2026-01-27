@@ -1,0 +1,71 @@
+{
+    "export_dir": "../characters/Hiro",
+    "output_dir_figure": "output/Hiro",
+    "output_dir_sprite": "output/Hiro/sprite",
+    "composite_keys_list": [
+        [
+            "Arms1",
+            "Smile"
+        ],
+        [
+            "Arms1",
+            "Cry2"
+        ],
+        [
+            "Arms1",
+            "Angry2"
+        ],
+        [
+            "Arms1",
+            "Flushed"
+        ],
+        [
+            "Arms1",
+            "Flushed2"
+        ],
+        [
+            "Arms1",
+            "Surprised"
+        ],
+        [
+            "Arms1",
+            "Smile2"
+        ],
+        [
+            "Arms1",
+            "Cry"
+        ],
+        [
+            "Arms1",
+            "Fearful"
+        ],
+        [
+            "Arms1",
+            "Angry"
+        ],
+        [
+            "Arms1",
+            "Surprised2"
+        ],
+        [
+            "Arms1",
+            "Default"
+        ],
+        [
+            "Arms1",
+            "Pensive2"
+        ],
+        [
+            "Arms1",
+            "Normal2"
+        ],
+        [
+            "Arms1",
+            "Pensive"
+        ],
+        [
+            "Arms1",
+            "Fearful2"
+        ]
+    ]
+}
