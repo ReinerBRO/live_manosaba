@@ -141,7 +141,7 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
         const isMergedArms = node.name && node.name.toLowerCase().startsWith('arms');
         if (isMaskOnly) return null;
         if (isMergedArms && hasSeparateArms) return null; // avoid four arms
-        const fullPath = `/asset/characters/${charName}/PSD/${node.image}`;
+        const fullPath = `/resources/characters/${charName}/PSD/${node.image}`;
         const ref = useRef(null);
         const texture = useTexture(fullPath);
 
@@ -317,7 +317,7 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
         if (model) {
             console.log('[CharacterViewer] model loaded', charName);
             // quick asset reachability test
-            const testUrl = `/asset/characters/${charName}/PSD/parts/Body.png`;
+            const testUrl = `/resources/characters/${charName}/PSD/parts/Body.png`;
             fetch(testUrl, { method: 'HEAD' })
                 .then(res => console.log('[CharacterViewer] test asset HEAD', testUrl, res.status))
                 .catch(err => console.warn('[CharacterViewer] test asset failed', err));
@@ -372,7 +372,7 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
             <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 9999, background: '#fff', padding: 4, border: '1px solid #ccc' }}>
                 <div style={{ fontSize: 12, color: '#333' }}>Asset check:</div>
                 <img
-                    src={lastAsset?.url || `/asset/characters/${charName}/PSD/parts/Body.png`}
+                    src={lastAsset?.url || `/resources/characters/${charName}/PSD/parts/Body.png`}
                     alt="debug body"
                     style={{ width: 80, height: 'auto', display: 'block' }}
                     onError={() => console.warn('Debug img failed to load')}

@@ -17,7 +17,7 @@ function App() {
   const makeSegment = (name, idx) => `${name || 'group'}#${idx}`;
 
   useEffect(() => {
-    fetch('/asset/characters.json')
+    fetch('/resources/characters.json')
       .then(res => res.json())
       .then(data => {
         setCharacters(data.characters);
@@ -31,7 +31,7 @@ function App() {
   useEffect(() => {
     if (!selectedChar) return;
     setLoading(true);
-    fetch(`/asset/characters/${selectedChar}/PSD/model.json`)
+    fetch(`/resources/characters/${selectedChar}/PSD/model.json`)
       .then(res => res.json())
       .then(data => {
         // Assign stable numeric ids to every node
@@ -96,7 +96,7 @@ function App() {
       };
       const layerNode = findLayer(modelData.root);
       if (layerNode && layerNode.image) {
-        const fullPath = `/asset/characters/${selectedChar}/PSD/${layerNode.image}`;
+        const fullPath = `/resources/characters/${selectedChar}/PSD/${layerNode.image}`;
         setLastAsset({ label: layerName, url: fullPath });
       } else {
         setLastAsset({ label: `${layerName} (asset not found)`, url: null });

@@ -1,0 +1,2141 @@
+{
+  "character": "Meruru",
+  "canvas_size": {
+    "width": 1259,
+    "height": 3129
+  },
+  "root": {
+    "type": "root",
+    "children": [
+      {
+        "name": "Mask_Ref1",
+        "visible": true,
+        "opacity": 255,
+        "blend_mode": "PASS_THROUGH",
+        "type": "group",
+        "children": [
+          {
+            "name": "Body",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Body.png",
+            "offset": {
+              "x": 0,
+              "y": 353
+            },
+            "size": {
+              "width": 1258,
+              "height": 2776
+            }
+          },
+          {
+            "name": "HeadBase02",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/HeadBase02.png",
+            "offset": {
+              "x": 83,
+              "y": 0
+            },
+            "size": {
+              "width": 1117,
+              "height": 1072
+            }
+          },
+          {
+            "name": "Cheeks02_Flushed",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Cheeks02_Flushed.png",
+            "offset": {
+              "x": 441,
+              "y": 421
+            },
+            "size": {
+              "width": 367,
+              "height": 147
+            }
+          },
+          {
+            "name": "Cheeks02_Normal",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Cheeks02_Normal.png",
+            "offset": {
+              "x": 459,
+              "y": 424
+            },
+            "size": {
+              "width": 331,
+              "height": 149
+            }
+          },
+          {
+            "name": "Mouth02",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "PASS_THROUGH",
+            "type": "group",
+            "children": [
+              {
+                "name": "Mouth02_Fearful_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Fearful_Open01.png",
+                "offset": {
+                  "x": 598,
+                  "y": 549
+                },
+                "size": {
+                  "width": 54,
+                  "height": 17
+                }
+              },
+              {
+                "name": "Mouth02_Flushed_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Flushed_Closed01.png",
+                "offset": {
+                  "x": 598,
+                  "y": 546
+                },
+                "size": {
+                  "width": 58,
+                  "height": 12
+                }
+              },
+              {
+                "name": "Mouth02_Surprised_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Surprised_Open02.png",
+                "offset": {
+                  "x": 592,
+                  "y": 529
+                },
+                "size": {
+                  "width": 71,
+                  "height": 56
+                }
+              },
+              {
+                "name": "Mouth02_Surprised_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Surprised_Open01.png",
+                "offset": {
+                  "x": 597,
+                  "y": 536
+                },
+                "size": {
+                  "width": 64,
+                  "height": 41
+                }
+              },
+              {
+                "name": "Mouth02_Cry_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Cry_Open01.png",
+                "offset": {
+                  "x": 593,
+                  "y": 534
+                },
+                "size": {
+                  "width": 69,
+                  "height": 51
+                }
+              },
+              {
+                "name": "Mouth02_Pensive_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Pensive_Closed01.png",
+                "offset": {
+                  "x": 615,
+                  "y": 549
+                },
+                "size": {
+                  "width": 20,
+                  "height": 5
+                }
+              },
+              {
+                "name": "Mouth02_Angry_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Angry_Closed01.png",
+                "offset": {
+                  "x": 589,
+                  "y": 560
+                },
+                "size": {
+                  "width": 80,
+                  "height": 9
+                }
+              },
+              {
+                "name": "Mouth02_Angry_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Angry_Open02.png",
+                "offset": {
+                  "x": 593,
+                  "y": 536
+                },
+                "size": {
+                  "width": 68,
+                  "height": 51
+                }
+              },
+              {
+                "name": "Mouth02_Angry_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Angry_Open01.png",
+                "offset": {
+                  "x": 580,
+                  "y": 529
+                },
+                "size": {
+                  "width": 94,
+                  "height": 55
+                }
+              },
+              {
+                "name": "Mouth02_Smile_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Smile_Closed01.png",
+                "offset": {
+                  "x": 592,
+                  "y": 551
+                },
+                "size": {
+                  "width": 71,
+                  "height": 21
+                }
+              },
+              {
+                "name": "Mouth02_Normal_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Normal_Closed01.png",
+                "offset": {
+                  "x": 600,
+                  "y": 561
+                },
+                "size": {
+                  "width": 54,
+                  "height": 4
+                }
+              },
+              {
+                "name": "Mouth02_Normal_Open03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Normal_Open03.png",
+                "offset": {
+                  "x": 603,
+                  "y": 539
+                },
+                "size": {
+                  "width": 48,
+                  "height": 44
+                }
+              },
+              {
+                "name": "Mouth02_Normal_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Normal_Open02.png",
+                "offset": {
+                  "x": 604,
+                  "y": 544
+                },
+                "size": {
+                  "width": 47,
+                  "height": 30
+                }
+              },
+              {
+                "name": "Mouth02_Normal_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth02_Normal_Open01.png",
+                "offset": {
+                  "x": 590,
+                  "y": 553
+                },
+                "size": {
+                  "width": 75,
+                  "height": 19
+                }
+              }
+            ]
+          },
+          {
+            "name": "Eyes02",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "PASS_THROUGH",
+            "type": "group",
+            "children": [
+              {
+                "name": "Eyes02_Uncomfortable_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Uncomfortable_Open01.png",
+                "offset": {
+                  "x": 435,
+                  "y": 373
+                },
+                "size": {
+                  "width": 368,
+                  "height": 113
+                }
+              },
+              {
+                "name": "Eyes02_Downcast_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Downcast_Open01.png",
+                "offset": {
+                  "x": 435,
+                  "y": 377
+                },
+                "size": {
+                  "width": 368,
+                  "height": 105
+                }
+              },
+              {
+                "name": "Eyes02_Fearful_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Fearful_Open01.png",
+                "offset": {
+                  "x": 451,
+                  "y": 342
+                },
+                "size": {
+                  "width": 345,
+                  "height": 138
+                }
+              },
+              {
+                "name": "Eyes02_Flushed_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Flushed_Closed01.png",
+                "offset": {
+                  "x": 466,
+                  "y": 365
+                },
+                "size": {
+                  "width": 317,
+                  "height": 115
+                }
+              },
+              {
+                "name": "Eyes02_Surprised_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Surprised_Open01.png",
+                "offset": {
+                  "x": 454,
+                  "y": 311
+                },
+                "size": {
+                  "width": 335,
+                  "height": 178
+                }
+              },
+              {
+                "name": "Eyes02_Cry_Closed03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Cry_Closed03.png",
+                "offset": {
+                  "x": 466,
+                  "y": 365
+                },
+                "size": {
+                  "width": 317,
+                  "height": 115
+                }
+              },
+              {
+                "name": "Eyes02_Cry_Closed02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Cry_Closed02.png",
+                "offset": {
+                  "x": 433,
+                  "y": 369
+                },
+                "size": {
+                  "width": 369,
+                  "height": 133
+                }
+              },
+              {
+                "name": "Eyes02_Cry_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Cry_Closed01.png",
+                "offset": {
+                  "x": 433,
+                  "y": 394
+                },
+                "size": {
+                  "width": 369,
+                  "height": 206
+                }
+              },
+              {
+                "name": "Eyes02_Pensive_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Pensive_Open02.png",
+                "offset": {
+                  "x": 435,
+                  "y": 373
+                },
+                "size": {
+                  "width": 368,
+                  "height": 109
+                }
+              },
+              {
+                "name": "Eyes02_Pensive_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Pensive_Open01.png",
+                "offset": {
+                  "x": 435,
+                  "y": 373
+                },
+                "size": {
+                  "width": 368,
+                  "height": 113
+                }
+              },
+              {
+                "name": "Eyes02_Angry_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Angry_Closed01.png",
+                "offset": {
+                  "x": 471,
+                  "y": 395
+                },
+                "size": {
+                  "width": 312,
+                  "height": 87
+                }
+              },
+              {
+                "name": "Eyes02_Angry_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Angry_Open01.png",
+                "offset": {
+                  "x": 442,
+                  "y": 381
+                },
+                "size": {
+                  "width": 346,
+                  "height": 106
+                }
+              },
+              {
+                "name": "Eyes02_Smile_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Smile_Closed01.png",
+                "offset": {
+                  "x": 474,
+                  "y": 360
+                },
+                "size": {
+                  "width": 309,
+                  "height": 118
+                }
+              },
+              {
+                "name": "Eyes02_Normal_Open03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Normal_Open03.png",
+                "offset": {
+                  "x": 435,
+                  "y": 361
+                },
+                "size": {
+                  "width": 368,
+                  "height": 121
+                }
+              },
+              {
+                "name": "Eyes02_Normal_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Normal_Open02.png",
+                "offset": {
+                  "x": 435,
+                  "y": 363
+                },
+                "size": {
+                  "width": 367,
+                  "height": 117
+                }
+              },
+              {
+                "name": "Eyes02_Normal_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes02_Normal_Open01.png",
+                "offset": {
+                  "x": 435,
+                  "y": 362
+                },
+                "size": {
+                  "width": 368,
+                  "height": 123
+                }
+              }
+            ]
+          },
+          {
+            "name": "ClippingMask_Eyes02_01",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": true,
+            "image": "parts/ClippingMask_Eyes02_01.png",
+            "offset": {
+              "x": 432,
+              "y": 308
+            },
+            "size": {
+              "width": 373,
+              "height": 281
+            }
+          },
+          {
+            "name": "ClippingMask_Facial02_01",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "MULTIPLY",
+            "type": "layer",
+            "clipping": true,
+            "image": "parts/ClippingMask_Facial02_01.png",
+            "offset": {
+              "x": 436,
+              "y": 225
+            },
+            "size": {
+              "width": 354,
+              "height": 350
+            }
+          },
+          {
+            "name": "Sweat02_01",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Sweat02_01.png",
+            "offset": {
+              "x": 519,
+              "y": 529
+            },
+            "size": {
+              "width": 16,
+              "height": 36
+            }
+          },
+          {
+            "name": "Pale02_01",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "MULTIPLY",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Pale02_01.png",
+            "offset": {
+              "x": 459,
+              "y": 254
+            },
+            "size": {
+              "width": 315,
+              "height": 289
+            }
+          },
+          {
+            "name": "HeadBase01",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/HeadBase01.png",
+            "offset": {
+              "x": 83,
+              "y": 4
+            },
+            "size": {
+              "width": 1117,
+              "height": 1069
+            }
+          },
+          {
+            "name": "Cheeks01_Flushed",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Cheeks01_Flushed.png",
+            "offset": {
+              "x": 430,
+              "y": 421
+            },
+            "size": {
+              "width": 364,
+              "height": 171
+            }
+          },
+          {
+            "name": "Cheeks01_Normal",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Cheeks01_Normal.png",
+            "offset": {
+              "x": 429,
+              "y": 427
+            },
+            "size": {
+              "width": 350,
+              "height": 174
+            }
+          },
+          {
+            "name": "Mouth01",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "PASS_THROUGH",
+            "type": "group",
+            "children": [
+              {
+                "name": "Mouth01_Fearful_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Fearful_Open01.png",
+                "offset": {
+                  "x": 596,
+                  "y": 563
+                },
+                "size": {
+                  "width": 54,
+                  "height": 18
+                }
+              },
+              {
+                "name": "Mouth01_Flushed_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Flushed_Closed01.png",
+                "offset": {
+                  "x": 594,
+                  "y": 553
+                },
+                "size": {
+                  "width": 57,
+                  "height": 16
+                }
+              },
+              {
+                "name": "Mouth01_Surprised_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Surprised_Open02.png",
+                "offset": {
+                  "x": 589,
+                  "y": 541
+                },
+                "size": {
+                  "width": 72,
+                  "height": 56
+                }
+              },
+              {
+                "name": "Mouth01_Surprised_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Surprised_Open01.png",
+                "offset": {
+                  "x": 595,
+                  "y": 547
+                },
+                "size": {
+                  "width": 64,
+                  "height": 44
+                }
+              },
+              {
+                "name": "Mouth01_Cry_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Cry_Open01.png",
+                "offset": {
+                  "x": 593,
+                  "y": 544
+                },
+                "size": {
+                  "width": 68,
+                  "height": 52
+                }
+              },
+              {
+                "name": "Mouth01_Pensive_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Pensive_Closed01.png",
+                "offset": {
+                  "x": 611,
+                  "y": 561
+                },
+                "size": {
+                  "width": 20,
+                  "height": 6
+                }
+              },
+              {
+                "name": "Mouth01_Angry_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Angry_Closed01.png",
+                "offset": {
+                  "x": 588,
+                  "y": 569
+                },
+                "size": {
+                  "width": 79,
+                  "height": 16
+                }
+              },
+              {
+                "name": "Mouth01_Angry_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Angry_Open02.png",
+                "offset": {
+                  "x": 591,
+                  "y": 547
+                },
+                "size": {
+                  "width": 67,
+                  "height": 52
+                }
+              },
+              {
+                "name": "Mouth01_Angry_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Angry_Open01.png",
+                "offset": {
+                  "x": 578,
+                  "y": 540
+                },
+                "size": {
+                  "width": 94,
+                  "height": 57
+                }
+              },
+              {
+                "name": "Mouth01_Smile_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Smile_Closed01.png",
+                "offset": {
+                  "x": 591,
+                  "y": 559
+                },
+                "size": {
+                  "width": 68,
+                  "height": 27
+                }
+              },
+              {
+                "name": "Mouth01_Normal_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Normal_Closed01.png",
+                "offset": {
+                  "x": 598,
+                  "y": 568
+                },
+                "size": {
+                  "width": 53,
+                  "height": 11
+                }
+              },
+              {
+                "name": "Mouth01_Normal_Open03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Normal_Open03.png",
+                "offset": {
+                  "x": 600,
+                  "y": 550
+                },
+                "size": {
+                  "width": 49,
+                  "height": 45
+                }
+              },
+              {
+                "name": "Mouth01_Normal_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Normal_Open02.png",
+                "offset": {
+                  "x": 602,
+                  "y": 556
+                },
+                "size": {
+                  "width": 47,
+                  "height": 32
+                }
+              },
+              {
+                "name": "Mouth01_Normal_Open01",
+                "visible": true,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Mouth01_Normal_Open01.png",
+                "offset": {
+                  "x": 588,
+                  "y": 562
+                },
+                "size": {
+                  "width": 75,
+                  "height": 24
+                }
+              }
+            ]
+          },
+          {
+            "name": "Eyes01",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "PASS_THROUGH",
+            "type": "group",
+            "children": [
+              {
+                "name": "Eyes01_Uncomfortable_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Uncomfortable_Open01.png",
+                "offset": {
+                  "x": 423,
+                  "y": 383
+                },
+                "size": {
+                  "width": 363,
+                  "height": 128
+                }
+              },
+              {
+                "name": "Eyes01_Downcast_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Downcast_Open01.png",
+                "offset": {
+                  "x": 425,
+                  "y": 386
+                },
+                "size": {
+                  "width": 359,
+                  "height": 123
+                }
+              },
+              {
+                "name": "Eyes01_Fearful_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Fearful_Open01.png",
+                "offset": {
+                  "x": 438,
+                  "y": 355
+                },
+                "size": {
+                  "width": 341,
+                  "height": 151
+                }
+              },
+              {
+                "name": "Eyes01_Flushed_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Flushed_Closed01.png",
+                "offset": {
+                  "x": 453,
+                  "y": 376
+                },
+                "size": {
+                  "width": 315,
+                  "height": 133
+                }
+              },
+              {
+                "name": "Eyes01_Surprised_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Surprised_Open01.png",
+                "offset": {
+                  "x": 442,
+                  "y": 321
+                },
+                "size": {
+                  "width": 328,
+                  "height": 192
+                }
+              },
+              {
+                "name": "Eyes01_Cry_Closed03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Cry_Closed03.png",
+                "offset": {
+                  "x": 452,
+                  "y": 376
+                },
+                "size": {
+                  "width": 316,
+                  "height": 133
+                }
+              },
+              {
+                "name": "Eyes01_Cry_Closed02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Cry_Closed02.png",
+                "offset": {
+                  "x": 421,
+                  "y": 378
+                },
+                "size": {
+                  "width": 363,
+                  "height": 149
+                }
+              },
+              {
+                "name": "Eyes01_Cry_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Cry_Closed01.png",
+                "offset": {
+                  "x": 421,
+                  "y": 404
+                },
+                "size": {
+                  "width": 363,
+                  "height": 214
+                }
+              },
+              {
+                "name": "Eyes01_Pensive_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Pensive_Open02.png",
+                "offset": {
+                  "x": 424,
+                  "y": 382
+                },
+                "size": {
+                  "width": 360,
+                  "height": 131
+                }
+              },
+              {
+                "name": "Eyes01_Pensive_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Pensive_Open01.png",
+                "offset": {
+                  "x": 423,
+                  "y": 383
+                },
+                "size": {
+                  "width": 361,
+                  "height": 128
+                }
+              },
+              {
+                "name": "Eyes01_Angry_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Angry_Closed01.png",
+                "offset": {
+                  "x": 457,
+                  "y": 393
+                },
+                "size": {
+                  "width": 311,
+                  "height": 118
+                }
+              },
+              {
+                "name": "Eyes01_Angry_Open01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Angry_Open01.png",
+                "offset": {
+                  "x": 430,
+                  "y": 381
+                },
+                "size": {
+                  "width": 336,
+                  "height": 133
+                }
+              },
+              {
+                "name": "Eyes01_Smile_Closed01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Smile_Closed01.png",
+                "offset": {
+                  "x": 452,
+                  "y": 366
+                },
+                "size": {
+                  "width": 316,
+                  "height": 143
+                }
+              },
+              {
+                "name": "Eyes01_Normal_Open03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Normal_Open03.png",
+                "offset": {
+                  "x": 423,
+                  "y": 366
+                },
+                "size": {
+                  "width": 362,
+                  "height": 143
+                }
+              },
+              {
+                "name": "Eyes01_Normal_Open02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Normal_Open02.png",
+                "offset": {
+                  "x": 423,
+                  "y": 373
+                },
+                "size": {
+                  "width": 362,
+                  "height": 132
+                }
+              },
+              {
+                "name": "Eyes01_Normal_Open01",
+                "visible": true,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/Eyes01_Normal_Open01.png",
+                "offset": {
+                  "x": 423,
+                  "y": 373
+                },
+                "size": {
+                  "width": 362,
+                  "height": 138
+                }
+              }
+            ]
+          },
+          {
+            "name": "ClippingMask_Eyes01_01",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": true,
+            "image": "parts/ClippingMask_Eyes01_01.png",
+            "offset": {
+              "x": 419,
+              "y": 319
+            },
+            "size": {
+              "width": 367,
+              "height": 275
+            }
+          },
+          {
+            "name": "ClippingMask_Facial01_01",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "MULTIPLY",
+            "type": "layer",
+            "clipping": true,
+            "image": "parts/ClippingMask_Facial01_01.png",
+            "offset": {
+              "x": 428,
+              "y": 231
+            },
+            "size": {
+              "width": 352,
+              "height": 369
+            }
+          },
+          {
+            "name": "Sweat01_01",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Sweat01_01.png",
+            "offset": {
+              "x": 517,
+              "y": 552
+            },
+            "size": {
+              "width": 17,
+              "height": 36
+            }
+          },
+          {
+            "name": "Pale01_01",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "MULTIPLY",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Pale01_01.png",
+            "offset": {
+              "x": 435,
+              "y": 261
+            },
+            "size": {
+              "width": 317,
+              "height": 308
+            }
+          },
+          {
+            "name": "Arms01",
+            "visible": false,
+            "opacity": 255,
+            "blend_mode": "NORMAL",
+            "type": "layer",
+            "clipping": false,
+            "image": "parts/Arms01.png",
+            "offset": {
+              "x": 309,
+              "y": 711
+            },
+            "size": {
+              "width": 683,
+              "height": 930
+            }
+          },
+          {
+            "name": "ArmL",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "PASS_THROUGH",
+            "type": "group",
+            "children": [
+              {
+                "name": "ArmL16",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL16.png",
+                "offset": {
+                  "x": 719,
+                  "y": 545
+                },
+                "size": {
+                  "width": 323,
+                  "height": 955
+                }
+              },
+              {
+                "name": "ArmL15",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL15.png",
+                "offset": {
+                  "x": 632,
+                  "y": 512
+                },
+                "size": {
+                  "width": 411,
+                  "height": 988
+                }
+              },
+              {
+                "name": "ArmL14",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL14.png",
+                "offset": {
+                  "x": 654,
+                  "y": 636
+                },
+                "size": {
+                  "width": 416,
+                  "height": 822
+                }
+              },
+              {
+                "name": "ArmL13",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL13.png",
+                "offset": {
+                  "x": 704,
+                  "y": 699
+                },
+                "size": {
+                  "width": 394,
+                  "height": 1054
+                }
+              },
+              {
+                "name": "ArmL12",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL12.png",
+                "offset": {
+                  "x": 622,
+                  "y": 529
+                },
+                "size": {
+                  "width": 397,
+                  "height": 936
+                }
+              },
+              {
+                "name": "ArmL11",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL11.png",
+                "offset": {
+                  "x": 815,
+                  "y": 740
+                },
+                "size": {
+                  "width": 252,
+                  "height": 927
+                }
+              },
+              {
+                "name": "ArmL10",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL10.png",
+                "offset": {
+                  "x": 721,
+                  "y": 754
+                },
+                "size": {
+                  "width": 384,
+                  "height": 1070
+                }
+              },
+              {
+                "name": "ArmL09",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL09.png",
+                "offset": {
+                  "x": 707,
+                  "y": 724
+                },
+                "size": {
+                  "width": 355,
+                  "height": 947
+                }
+              },
+              {
+                "name": "ArmL08",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL08.png",
+                "offset": {
+                  "x": 620,
+                  "y": 740
+                },
+                "size": {
+                  "width": 486,
+                  "height": 1131
+                }
+              },
+              {
+                "name": "ArmL07",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL07.png",
+                "offset": {
+                  "x": 622,
+                  "y": 565
+                },
+                "size": {
+                  "width": 397,
+                  "height": 899
+                }
+              },
+              {
+                "name": "ArmL06",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL06.png",
+                "offset": {
+                  "x": 670,
+                  "y": 493
+                },
+                "size": {
+                  "width": 364,
+                  "height": 1014
+                }
+              },
+              {
+                "name": "ArmL05",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL05.png",
+                "offset": {
+                  "x": 712,
+                  "y": 724
+                },
+                "size": {
+                  "width": 350,
+                  "height": 947
+                }
+              },
+              {
+                "name": "ArmL04",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL04.png",
+                "offset": {
+                  "x": 783,
+                  "y": 725
+                },
+                "size": {
+                  "width": 302,
+                  "height": 1046
+                }
+              },
+              {
+                "name": "ArmL03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL03.png",
+                "offset": {
+                  "x": 268,
+                  "y": 705
+                },
+                "size": {
+                  "width": 951,
+                  "height": 1076
+                }
+              },
+              {
+                "name": "ArmL02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL02.png",
+                "offset": {
+                  "x": 606,
+                  "y": 725
+                },
+                "size": {
+                  "width": 426,
+                  "height": 1086
+                }
+              },
+              {
+                "name": "ArmL01",
+                "visible": true,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmL01.png",
+                "offset": {
+                  "x": 599,
+                  "y": 725
+                },
+                "size": {
+                  "width": 468,
+                  "height": 936
+                }
+              }
+            ]
+          },
+          {
+            "name": "ArmR",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "PASS_THROUGH",
+            "type": "group",
+            "children": [
+              {
+                "name": "ArmR13",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR13.png",
+                "offset": {
+                  "x": 168,
+                  "y": 574
+                },
+                "size": {
+                  "width": 514,
+                  "height": 895
+                }
+              },
+              {
+                "name": "ArmR12",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR12.png",
+                "offset": {
+                  "x": 145,
+                  "y": 662
+                },
+                "size": {
+                  "width": 367,
+                  "height": 927
+                }
+              },
+              {
+                "name": "ArmR11",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR11.png",
+                "offset": {
+                  "x": 262,
+                  "y": 529
+                },
+                "size": {
+                  "width": 367,
+                  "height": 936
+                }
+              },
+              {
+                "name": "ArmR10",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR10.png",
+                "offset": {
+                  "x": 202,
+                  "y": 764
+                },
+                "size": {
+                  "width": 270,
+                  "height": 908
+                }
+              },
+              {
+                "name": "ArmR09",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR09.png",
+                "offset": {
+                  "x": 187,
+                  "y": 728
+                },
+                "size": {
+                  "width": 382,
+                  "height": 944
+                }
+              },
+              {
+                "name": "ArmR08",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR08.png",
+                "offset": {
+                  "x": 106,
+                  "y": 759
+                },
+                "size": {
+                  "width": 609,
+                  "height": 1150
+                }
+              },
+              {
+                "name": "ArmR07",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR07.png",
+                "offset": {
+                  "x": 161,
+                  "y": 754
+                },
+                "size": {
+                  "width": 360,
+                  "height": 1070
+                }
+              },
+              {
+                "name": "ArmR06",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR06.png",
+                "offset": {
+                  "x": 215,
+                  "y": 465
+                },
+                "size": {
+                  "width": 392,
+                  "height": 988
+                }
+              },
+              {
+                "name": "ArmR05",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR05.png",
+                "offset": {
+                  "x": 180,
+                  "y": 759
+                },
+                "size": {
+                  "width": 546,
+                  "height": 927
+                }
+              },
+              {
+                "name": "ArmR04",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR04.png",
+                "offset": {
+                  "x": 130,
+                  "y": 758
+                },
+                "size": {
+                  "width": 397,
+                  "height": 1002
+                }
+              },
+              {
+                "name": "ArmR03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR03.png",
+                "offset": {
+                  "x": 66,
+                  "y": 728
+                },
+                "size": {
+                  "width": 410,
+                  "height": 1037
+                }
+              },
+              {
+                "name": "ArmR02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR02.png",
+                "offset": {
+                  "x": 162,
+                  "y": 758
+                },
+                "size": {
+                  "width": 489,
+                  "height": 1070
+                }
+              },
+              {
+                "name": "ArmR01",
+                "visible": true,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/ArmR01.png",
+                "offset": {
+                  "x": 165,
+                  "y": 758
+                },
+                "size": {
+                  "width": 500,
+                  "height": 911
+                }
+              }
+            ]
+          },
+          {
+            "name": "Option",
+            "visible": true,
+            "opacity": 255,
+            "blend_mode": "PASS_THROUGH",
+            "type": "group",
+            "children": [
+              {
+                "name": "OptionF_Head01_Arms01",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_Arms01.png",
+                "offset": {
+                  "x": 369,
+                  "y": 716
+                },
+                "size": {
+                  "width": 154,
+                  "height": 132
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR13",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR13.png",
+                "offset": {
+                  "x": 364,
+                  "y": 650
+                },
+                "size": {
+                  "width": 112,
+                  "height": 201
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR12",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR12.png",
+                "offset": {
+                  "x": 364,
+                  "y": 649
+                },
+                "size": {
+                  "width": 159,
+                  "height": 200
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR11",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR11.png",
+                "offset": {
+                  "x": 364,
+                  "y": 650
+                },
+                "size": {
+                  "width": 85,
+                  "height": 200
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR10",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR10.png",
+                "offset": {
+                  "x": 364,
+                  "y": 649
+                },
+                "size": {
+                  "width": 159,
+                  "height": 200
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR09",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR09.png",
+                "offset": {
+                  "x": 365,
+                  "y": 649
+                },
+                "size": {
+                  "width": 119,
+                  "height": 202
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR08",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR08.png",
+                "offset": {
+                  "x": 364,
+                  "y": 649
+                },
+                "size": {
+                  "width": 159,
+                  "height": 201
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR07",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR07.png",
+                "offset": {
+                  "x": 364,
+                  "y": 649
+                },
+                "size": {
+                  "width": 159,
+                  "height": 202
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR06",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR06.png",
+                "offset": {
+                  "x": 361,
+                  "y": 650
+                },
+                "size": {
+                  "width": 68,
+                  "height": 195
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR05",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR05.png",
+                "offset": {
+                  "x": 369,
+                  "y": 717
+                },
+                "size": {
+                  "width": 154,
+                  "height": 132
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR04",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR04.png",
+                "offset": {
+                  "x": 369,
+                  "y": 716
+                },
+                "size": {
+                  "width": 154,
+                  "height": 129
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR03",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR03.png",
+                "offset": {
+                  "x": 364,
+                  "y": 717
+                },
+                "size": {
+                  "width": 159,
+                  "height": 134
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR02",
+                "visible": false,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR02.png",
+                "offset": {
+                  "x": 369,
+                  "y": 716
+                },
+                "size": {
+                  "width": 154,
+                  "height": 129
+                }
+              },
+              {
+                "name": "OptionF_Head01_ArmR01",
+                "visible": true,
+                "opacity": 255,
+                "blend_mode": "NORMAL",
+                "type": "layer",
+                "clipping": false,
+                "image": "parts/OptionF_Head01_ArmR01.png",
+                "offset": {
+                  "x": 369,
+                  "y": 716
+                },
+                "size": {
+                  "width": 154,
+                  "height": 131
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "ClippingMask_Angle01_02",
+        "visible": true,
+        "opacity": 255,
+        "blend_mode": "SOFT_LIGHT",
+        "type": "layer",
+        "clipping": true,
+        "image": "parts/ClippingMask_Angle01_02.png",
+        "offset": {
+          "x": 235,
+          "y": 204
+        },
+        "size": {
+          "width": 846,
+          "height": 2859
+        }
+      },
+      {
+        "name": "ClippingMask_Angle01_01",
+        "visible": true,
+        "opacity": 255,
+        "blend_mode": "OVERLAY",
+        "type": "layer",
+        "clipping": true,
+        "image": "parts/ClippingMask_Angle01_01.png",
+        "offset": {
+          "x": 131,
+          "y": 1
+        },
+        "size": {
+          "width": 1108,
+          "height": 1269
+        }
+      }
+    ]
+  }
+}
