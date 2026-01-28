@@ -302,6 +302,41 @@ function App() {
               movePureStyleGroups('01', style01);
               movePureStyleGroups('02', style02);
 
+              // If Style 02 does not actually have controllable face parts (Eyes/Mouth),
+              // the "Head 02" toggle becomes misleading (e.g. Hanna has only HeadBase02).
+              // In that case, we collapse the variant and keep Style 01 only.
+              const hasSelectorGroup = (rootNode, prefixLower) => {
+                const stack = [rootNode];
+                while (stack.length) {
+                  const cur = stack.pop();
+                  if (!cur || cur.type !== 'group' || !Array.isArray(cur.children)) continue;
+                  const name = (cur.name || '').toLowerCase();
+                  const hasLayer = cur.children.some(c => c.type === 'layer');
+                  const hasGroup = cur.children.some(c => c.type === 'group');
+                  if (name.startsWith(prefixLower) && hasLayer && !hasGroup) return true;
+                  cur.children.forEach(c => stack.push(c));
+                }
+                return false;
+              };
+              const style01HasEyes = hasSelectorGroup(style01, 'eyes');
+              const style01HasMouth = hasSelectorGroup(style01, 'mouth');
+              const style02HasEyes = hasSelectorGroup(style02, 'eyes');
+              const style02HasMouth = hasSelectorGroup(style02, 'mouth');
+              const style02Incomplete = (style01HasEyes || style01HasMouth) && (!style02HasEyes && !style02HasMouth);
+
+              if (style02Incomplete) {
+                // Insert Style 01 head parts back into this node (keep ordering near body if possible),
+                // and drop Style 02 entirely to "fix head 01".
+                const bodyIdx = remaining.findIndex(c => (c.name || '').toLowerCase().includes('body'));
+                if (bodyIdx !== -1) {
+                  remaining.splice(bodyIdx + 1, 0, ...style01.children);
+                  node.children = remaining;
+                } else {
+                  node.children = [...style01.children, ...remaining];
+                }
+                return;
+              }
+
               headGroup.children.push(style01, style02);
 
               // Replace children: Remaining + New Head Group
@@ -473,6 +508,198 @@ function App() {
     }
   };
 
+  const randomizeExpression = (targetChar) => {
+    if (!(targetChar === 'Ema' || targetChar === 'Hiro' || targetChar === 'Sherry' || targetChar === 'Hanna')) return;
+    if (!modelData?.root || !modelData?._idMap) return;
+
+    const idMap = modelData._idMap;
+
+    const isSelectorGroup = (node) => {
+      if (!node || node.type !== 'group' || !Array.isArray(node.children) || node.children.length === 0) return false;
+      const hasLayer = node.children.some(c => c.type === 'layer');
+      const hasGroup = node.children.some(c => c.type === 'group');
+      return hasLayer && !hasGroup;
+    };
+
+    const getLayerChildren = (node) => (node?.children || []).filter(c => c.type === 'layer');
+    const pickOne = (arr) => (arr && arr.length ? arr[Math.floor(Math.random() * arr.length)] : null);
+
+    const findNodeByNameExact = (exactNameLower) => {
+      const entry = Object.entries(idMap).find(([, n]) => (n.name || '').toLowerCase() === exactNameLower);
+      return entry ? idMap[Number(entry[0])] : null;
+    };
+
+    const findGroupIdByPrefix = (prefixLower) => {
+      const entry = Object.entries(idMap).find(([, n]) => (n.name || '').toLowerCase().startsWith(prefixLower));
+      return entry ? Number(entry[0]) : null;
+    };
+
+    const findHeadVariant = () => {
+      // Prefer the injected variant group (name: "Head", isVariant: true)
+      const entry = Object.entries(idMap).find(([, n]) => n?.isVariant && (n.name || '').toLowerCase() === 'head');
+      if (entry) return idMap[Number(entry[0])];
+      // Fallback: any variant group
+      const any = Object.entries(idMap).find(([, n]) => n?.isVariant);
+      return any ? idMap[Number(any[0])] : null;
+    };
+
+    setViewState(() => {
+      const next = {};
+
+      const firstStyleToken = (s) => {
+        const str = String(s || '');
+        const idx01 = str.indexOf('01');
+        const idx02 = str.indexOf('02');
+        if (idx01 === -1 && idx02 === -1) return null;
+        if (idx01 === -1) return '02';
+        if (idx02 === -1) return '01';
+        return idx01 < idx02 ? '01' : '02';
+      };
+
+      // 1) Randomize Head 01/02 (variant group)
+      const headVariant = findHeadVariant();
+      let headStyleToken = null; // '01' or '02'
+      if (headVariant && Array.isArray(headVariant.children) && headVariant.children.length > 0) {
+        const styles = headVariant.children.filter(c => c.type === 'group');
+        const picked = pickOne(styles);
+        if (picked) next[headVariant._id] = picked.name;
+        headStyleToken = firstStyleToken(picked?.name || '');
+      }
+
+      // 2) Randomize all selector groups (but keep some special handling)
+      Object.values(idMap).forEach((node) => {
+        if (!isSelectorGroup(node)) return;
+        const groupName = (node.name || '').toLowerCase();
+
+        // Don't randomize option groups directly; they depend on arms mode.
+        if (groupName.includes('option')) return;
+        // Effects are always hidden; no need to randomize.
+        if (groupName.includes('effect')) return;
+
+        const layers = getLayerChildren(node);
+        if (layers.length === 0) return;
+
+        // FacialLine is always-on and should match the chosen head style.
+        if (groupName.includes('facialline')) {
+          const wanted = headStyleToken || '01';
+          const candidates = layers.filter(l => firstStyleToken(l.name || '') === wanted);
+          next[node._id] = (pickOne(candidates) || pickOne(layers))?.name ?? null;
+          return;
+        }
+
+        // HeadBase is always-on; match the chosen head style to avoid "head disappears".
+        if (groupName.includes('headbase')) {
+          const wanted = headStyleToken || '01';
+          const candidates = layers.filter(l => firstStyleToken(l.name || '') === wanted);
+          next[node._id] = (pickOne(candidates) || pickOne(layers))?.name ?? null;
+          return;
+        }
+
+        const isMouth = groupName.includes('mouth');
+        const isEyes = groupName.includes('eyes');
+        const isArm = groupName === 'arml' || groupName === 'armr' || groupName.startsWith('arms');
+        const isPale = groupName.startsWith('pale');
+
+        // No-None constraint for Mouth/Eyes/Arm
+        if (isMouth || isEyes || isArm) {
+          next[node._id] = pickOne(layers)?.name ?? null;
+          return;
+        }
+
+        // Pale defaults to None most of the time
+        if (isPale) {
+          next[node._id] = Math.random() < 0.8 ? null : (pickOne(layers)?.name ?? null);
+          return;
+        }
+
+        // Other groups: allow None occasionally
+        next[node._id] = Math.random() < 0.1 ? null : (pickOne(layers)?.name ?? null);
+      });
+
+      // 3) Arms mutual exclusion + option binding (merged vs separate)
+      const armsId = findGroupIdByPrefix('arms');
+      const armLId = findGroupIdByPrefix('arml');
+      const armRId = findGroupIdByPrefix('armr');
+
+      const armsNode = armsId !== null ? idMap[armsId] : null;
+      const armLNode = armLId !== null ? idMap[armLId] : null;
+      const armRNode = armRId !== null ? idMap[armRId] : null;
+
+      const armsLayers = getLayerChildren(armsNode);
+      const armLLayers = getLayerChildren(armLNode);
+      const armRLayers = getLayerChildren(armRNode);
+
+      const canMerged = armsLayers.length > 0;
+      const canSeparate = armLLayers.length > 0 || armRLayers.length > 0;
+      const mode = (canMerged && canSeparate) ? (Math.random() < 0.5 ? 'merged' : 'separate') : (canMerged ? 'merged' : 'separate');
+
+      const optArmsId = findGroupIdByPrefix('option_arms');
+      const optArmLId = findGroupIdByPrefix('option_arml');
+      const optArmRId = findGroupIdByPrefix('option_armr');
+
+      if (mode === 'merged') {
+        if (armsId !== null) next[armsId] = pickOne(armsLayers)?.name ?? null;
+        if (armLId !== null) next[armLId] = null;
+        if (armRId !== null) next[armRId] = null;
+
+        // Option_Arms should match Arms01/02 when present
+        if (optArmsId !== null && armsId !== null && next[armsId]) {
+          const optNode = idMap[optArmsId];
+          const optLayers = getLayerChildren(optNode);
+          const armNum = String(next[armsId]).replace(/[^0-9]/g, '');
+          const prefix = armNum ? `option_arms${armNum}` : 'option_arms';
+          const candidates = optLayers.filter(l => (l.name || '').toLowerCase().startsWith(prefix));
+          next[optArmsId] = (pickOne(candidates) || pickOne(optLayers))?.name ?? null;
+        }
+        if (optArmLId !== null) next[optArmLId] = null;
+        if (optArmRId !== null) next[optArmRId] = null;
+      } else {
+        // separate
+        if (armsId !== null) next[armsId] = null;
+        if (armLId !== null) next[armLId] = pickOne(armLLayers)?.name ?? null;
+        if (armRId !== null) next[armRId] = pickOne(armRLayers)?.name ?? null;
+
+        if (optArmsId !== null) next[optArmsId] = null;
+
+        // Option_ArmL/ArmR match selected numbers when present
+        if (optArmLId !== null && armLId !== null && next[armLId]) {
+          const optNode = idMap[optArmLId];
+          const optLayers = getLayerChildren(optNode);
+          const armNum = String(next[armLId]).replace(/[^0-9]/g, '');
+          const prefix = armNum ? `option_arml${armNum}` : 'option_arml';
+          const candidates = optLayers.filter(l => (l.name || '').toLowerCase().startsWith(prefix));
+          next[optArmLId] = (pickOne(candidates) || pickOne(optLayers))?.name ?? null;
+        } else if (optArmLId !== null) {
+          next[optArmLId] = null;
+        }
+
+        if (optArmRId !== null && armRId !== null && next[armRId]) {
+          const optNode = idMap[optArmRId];
+          const optLayers = getLayerChildren(optNode);
+          const armNum = String(next[armRId]).replace(/[^0-9]/g, '');
+          const prefix = armNum ? `option_armr${armNum}` : 'option_armr';
+          const candidates = optLayers.filter(l => (l.name || '').toLowerCase().startsWith(prefix));
+          next[optArmRId] = (pickOne(candidates) || pickOne(optLayers))?.name ?? null;
+        } else if (optArmRId !== null) {
+          next[optArmRId] = null;
+        }
+      }
+
+      // 4) Final safety: enforce no-None for mouth/eyes within current model
+      Object.values(idMap).forEach((node) => {
+        if (!isSelectorGroup(node)) return;
+        const groupName = (node.name || '').toLowerCase();
+        if (!(groupName.includes('mouth') || groupName.includes('eyes'))) return;
+        if (next[node._id] === null || next[node._id] === undefined) {
+          const layers = getLayerChildren(node);
+          next[node._id] = pickOne(layers)?.name ?? null;
+        }
+      });
+
+      return next;
+    });
+  };
+
   return (
     <Layout style={{ height: '100vh' }}>
       <Sider width={300} theme="light" style={{ borderRight: '1px solid #f0f0f0', overflowY: 'auto' }}>
@@ -498,6 +725,8 @@ function App() {
               onChange={handleStateChange}
               background={background}
               setBackground={setBackground}
+              charName={selectedChar}
+              onRandomizeExpression={() => randomizeExpression(selectedChar)}
               onExportHover={() => setIsExportHovering(true)}
               onExportLeave={() => setIsExportHovering(false)}
               onExportClick={() => {

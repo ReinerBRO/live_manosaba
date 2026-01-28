@@ -6,7 +6,7 @@ const { Panel } = Collapse;
 
 
 
-function ControlPanel({ model, viewState, onChange, background, setBackground, onExportHover, onExportLeave, onExportClick }) {
+function ControlPanel({ model, viewState, onChange, background, setBackground, onExportHover, onExportLeave, onExportClick, charName, onRandomizeExpression }) {
 
     // Decide if a node is a "Structure Group" (has subgroup) vs "Selector" (only layers)
     const isStructureGroup = (node) => {
@@ -29,9 +29,9 @@ function ControlPanel({ model, viewState, onChange, background, setBackground, o
 
         const activeArmRName = Object.entries(viewState).map(([k, v]) => v).find(v => v && v.toLowerCase().startsWith('armr') && !v.toLowerCase().includes('option'));
 
-        // Filtering: hide nodes named "Shadow" or "Effect" or "HeadBase" (case-insensitive)
+        // Filtering: hide nodes named "Shadow" or "Effect" or "HeadBase" or "FacialLine" (case-insensitive)
         const name = (node.name || '').toLowerCase();
-        if (name.includes('shadow') || name.includes('effect') || name.includes('headbase')) return null;
+        if (name.includes('shadow') || name.includes('effect') || name.includes('headbase') || name.includes('facialline')) return null;
 
         // 1. Variant Group (e.g. Head -> Style 01, Style 02)
         // Renders a selector for the children (styles), AND recursively renders the SELECTED child's content.
@@ -156,6 +156,15 @@ function ControlPanel({ model, viewState, onChange, background, setBackground, o
         return (
             <div style={{ padding: '0 10px', overflowY: 'auto', height: '100%' }}>
                 <h3>Controls</h3>
+
+                {/* Randomizer (currently enabled for Ema/Hiro/Sherry/Hanna) */}
+                {(charName === 'Ema' || charName === 'Hiro' || charName === 'Sherry' || charName === 'Hanna') && typeof onRandomizeExpression === 'function' && (
+                    <div style={{ marginBottom: 12 }}>
+                        <Button type="primary" onClick={onRandomizeExpression} style={{ width: '100%' }}>
+                            随机表情 / Random Expression ({charName})
+                        </Button>
+                    </div>
+                )}
 
                 {/* Background Selector */}
                 {setBackground && (

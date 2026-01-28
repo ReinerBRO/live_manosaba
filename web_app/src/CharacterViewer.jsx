@@ -158,13 +158,17 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
         // Selector group: only layers, no sub-groups OR flagged Variant
         if (node.isVariant || (layerChildren.length > 0 && groupChildren.length === 0)) {
             let selectedName = viewState[node._id];
+            const lowerName = (node.name || '').toLowerCase();
+            const isAlwaysOn = lowerName.includes('facialline') || lowerName.includes('headbase');
 
             // Determine pool of selectable children
             // Variants select from their Subgroups (Style 01, Style 02)
             // Normal selectors select from Layers
             const pool = node.isVariant ? groupChildren : layerChildren;
 
-            if (selectedName === null && !node.isVariant) return null; // explicit None (Variants enforce one active)
+            // Some base layers are always-on; ignore explicit None.
+            if (selectedName === null && !node.isVariant && !isAlwaysOn) return null; // explicit None (Variants enforce one active)
+            if (isAlwaysOn && selectedName === null) selectedName = undefined;
 
             if (!selectedName) {
                 // If variant, default to first; if layer selector, default to visible or first
