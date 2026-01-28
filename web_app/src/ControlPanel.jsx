@@ -1,12 +1,12 @@
 import React from 'react';
-import { Radio, Collapse } from 'antd';
-import { CaretRightOutlined } from '@ant-design/icons';
+import { Radio, Collapse, Button } from 'antd';
+import { CaretRightOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
 
 
 
-function ControlPanel({ model, viewState, onChange, background, setBackground }) {
+function ControlPanel({ model, viewState, onChange, background, setBackground, onExportHover, onExportLeave, onExportClick }) {
 
     // Decide if a node is a "Structure Group" (has subgroup) vs "Selector" (only layers)
     const isStructureGroup = (node) => {
@@ -182,6 +182,21 @@ function ControlPanel({ model, viewState, onChange, background, setBackground })
                         {renderNode(child)}
                     </div>
                 ))}
+
+                {/* Export Button */}
+                <div style={{ marginTop: 30, marginBottom: 20, textAlign: 'center' }}>
+                    <Button
+                        type="primary"
+                        icon={<DownloadOutlined />}
+                        size="large"
+                        onMouseEnter={onExportHover}
+                        onMouseLeave={onExportLeave}
+                        onClick={onExportClick}
+                        style={{ width: '100%' }}
+                    >
+                        导出图片 / Export
+                    </Button>
+                </div>
             </div>
         );
     }

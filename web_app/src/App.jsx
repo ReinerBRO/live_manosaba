@@ -14,8 +14,20 @@ function App() {
   const [viewState, setViewState] = useState({}); // keys are unique group paths -> selected layer name
   const [lastAsset, setLastAsset] = useState(null); // debug: {label, url}
   const [loading, setLoading] = useState(false);
+  const [isExportHovering, setIsExportHovering] = useState(false);
+
+  const viewerRef = React.useRef(null);
+
   const makeKey = (pathArr) => pathArr.filter(Boolean).join('/');
+
   const makeSegment = (name, idx) => `${name || 'group'}#${idx}`;
+  const findIdByPrefix = (prefix) => {
+    if (!modelData?._idMap) return null;
+    const entry = Object.entries(modelData._idMap).find(([, n]) =>
+      (n.name || '').toLowerCase().startsWith(prefix.toLowerCase())
+    );
+    return entry ? Number(entry[0]) : null;
+  };
 
   useEffect(() => {
     fetch('/resources/characters.json')
@@ -96,140 +108,221 @@ function App() {
 
 
           // --- Restructure Head Variants (01 vs 02) ---
-          const restructureHeadVariants = (root) => {
-            const headGroup = {
-              name: "Head",
-              type: "group",
-              isVariant: true, // Custom flag for mutual exclusion
-              visible: true,
-              opacity: 255,
-              blend_mode: "PASS_THROUGH",
-              children: []
-            };
+          const restructureHeadVariants = (node) => {
+            if (!node || !node.children) return;
 
-            const style01 = {
-              name: "Head 01",
-              type: "group",
-              visible: true,
-              opacity: 255,
-              blend_mode: "PASS_THROUGH",
-              children: []
-            };
+            // 1. Scan children to see if THIS node contains the variants
+            // We look for components that DIRECTLY belong to 'Head 01' or 'Head 02'
+            // logic: find at least one component matching style 01 AND one matching style 02
+            let hasStyle01 = false;
+            let hasStyle02 = false;
 
-            const style02 = {
-              name: "Head 02",
-              type: "group",
-              visible: true,
-              opacity: 255,
-              blend_mode: "PASS_THROUGH",
-              children: []
-            };
-
-            // Helper to check if node belongs to a specific style (01 or 02)
-            // Logic: Must be one of the Head components AND have the specific number as the *first* occurrence of 01/02
-            const matchesStyle = (node, styleNum) => {
-              const n = (node.name || '');
+            const matchesStyle = (child, styleNum) => {
+              const n = (child.name || '');
               const lower = n.toLowerCase();
-
-              // 1. Whitelist check: Must be a head component
-              const headKeywords = ['headbase', 'cheeks', 'eyes', 'mouth', 'sweat', 'pale', 'mask_ref', 'facial'];
+              // Whitelist
+              const headKeywords = ['headbase', 'cheeks', 'eyes', 'mouth', 'sweat', 'pale', 'mask_ref', 'facial', 'optionb_head'];
               const isHeadComponent = headKeywords.some(k => lower.startsWith(k));
-
               if (!isHeadComponent) return false;
 
-              // 2. Check suffix logic: "match with the first 01 or 02 after the word"
-              // Simplification: Check if the *first* occurrence of "01" or "02" matches our target
-              const idx01 = n.indexOf('01');
-              const idx02 = n.indexOf('02');
+              // IMPORTANT:
+              // We must NOT treat any occurrence of "01" as style-01 because many names are like Sweat02_01
+              // where "02" is the head style, and "_01" is just a variant index.
+              const firstStyleToken = (s) => {
+                const str = String(s || '');
+                const idx01 = str.indexOf('01');
+                const idx02 = str.indexOf('02');
+                if (idx01 === -1 && idx02 === -1) return null;
+                if (idx01 === -1) return '02';
+                if (idx02 === -1) return '01';
+                return idx01 < idx02 ? '01' : '02';
+              };
 
-              // If neither exists, logic is tricky. Assuming if it's a head component but no number, maybe it's neutral?
-              // But user said "match... 01 or 02". If none, maybe keep in root?
-              // For now, if strictly 01 or 02 is required:
+              const selfToken = firstStyleToken(n);
+
+              // Infer style from descendants by using the FIRST style token in each name (not any token).
+              const inferChildTokens = (node) => {
+                let has01 = false;
+                let has02 = false;
+                const walk = (nd) => {
+                  const t = firstStyleToken(nd.name || '');
+                  if (t === '01') has01 = true;
+                  if (t === '02') has02 = true;
+                  (nd.children || []).forEach(walk);
+                };
+                (node.children || []).forEach(walk);
+                return { has01, has02 };
+              };
+
+              const { has01, has02 } = inferChildTokens(child);
 
               if (styleNum === '01') {
-                if (idx01 !== -1 && (idx02 === -1 || idx01 < idx02)) return true;
-              }
-              if (styleNum === '02') {
-                if (idx02 !== -1 && (idx01 === -1 || idx02 < idx01)) return true;
+                // Mislabeled pure-02 group named like "*01" (Hiro mouth group)
+                if (selfToken === '01' && has02 && !has01) return false;
+                if (selfToken === '01') return true;
+                if (selfToken === '02') return false;
+                return has01 && !has02;
               }
 
-              // Should we check children? 
-              // If group (like Mask_Ref1), it might not have number in name but children do?
-              // User said "Mask_Ref1 and Ref2", earlier I saw Mask_Ref1 twice.
-              // If parent doesn't have explicit 01/02, maybe check children?
-              // The previous "Mask_Ref1" duplicates were distinguished by children content.
-              if (node.children && idx01 === -1 && idx02 === -1) {
-                return node.children.some(c => matchesStyle(c, styleNum));
+              if (styleNum === '02') {
+                // Mislabeled pure-01 group named like "*02" (rare)
+                if (selfToken === '02' && has01 && !has02) return false;
+                if (selfToken === '02') return true;
+                if (selfToken === '01' && has02 && !has01) return true;
+                if (selfToken === '01') return false;
+                return has02 && !has01;
               }
 
               return false;
             };
 
-            // Filter root children
-            const remainingChildren = [];
-            root.children.forEach(child => {
-              const n = (child.name || '').toLowerCase();
-
-              // Always keep Body, Shadow, Arms, Hair, etc. in root (unless they explicitly match Head logic? No, user said Arm is common)
-              // So we only move things if they Pass the matchesStyle check.
-
-              if (matchesStyle(child, '02')) {
-                style02.children.push(child);
-              } else if (matchesStyle(child, '01')) {
-                style01.children.push(child);
-              } else {
-                remainingChildren.push(child);
-              }
+            node.children.forEach(child => {
+              if (matchesStyle(child, '01')) hasStyle01 = true;
+              if (matchesStyle(child, '02')) hasStyle02 = true;
             });
 
-            // If we found items, apply restructuring
-            if (style01.children.length > 0 && style02.children.length > 0) {
+            // If we found both styles in this node's children, we RESTRUCTURE THIS NODE (Split it)
+            // But strict check: Only split if it involves "Core" head parts (HeadBase or OptionB_Head).
+            // This prevents splitting "Mouth" groups just because they have Mouth01/Mouth02 (Alisa case).
+            const hasCoreHeadPart = node.children.some(child => {
+              const n = (child.name || '').toLowerCase();
+              return n.includes('headbase') || n.includes('optionb_head');
+            });
 
-              // CRITICAL: Group loose layers inside styles so ControlPanel renders them!
-              // ControlPanel ignores loose layers inside Structure Groups (groups with subgroups).
-              // Since Style01/02 contain subgroups (like Eyes, Mouth), loose layers (Cheeks, HeadBase) MUST be grouped.
-              const groupKeywords = ['Cheeks', 'HeadBase', 'FacialLine', 'Sweat', 'Pale'];
+            if (hasStyle01 && hasStyle02 && hasCoreHeadPart) {
+              console.log('Restructuring Head Variants in:', node.name || 'Root');
+              const headGroup = {
+                name: "Head",
+                type: "group",
+                isVariant: true,
+                visible: true,
+                opacity: 255,
+                blend_mode: "PASS_THROUGH",
+                children: []
+              };
+              const style01 = { name: "Head 01", type: "group", visible: true, opacity: 255, blend_mode: "PASS_THROUGH", children: [] };
+              const style02 = { name: "Head 02", type: "group", visible: true, opacity: 255, blend_mode: "PASS_THROUGH", children: [] };
 
+              const remaining = [];
+              node.children.forEach(child => {
+                if (matchesStyle(child, '02')) {
+                  // Fix naming collision: If it belongs to Style 02 but is named "01", rename it to "02".
+                  // This solves the Hiro case where two groups are named "Mouth01" (one for 01, one for 02).
+                  if ((child.name || '').indexOf('01') !== -1) {
+                    child.name = child.name.replace('01', '02');
+                  }
+                  style02.children.push(child);
+                }
+                else if (matchesStyle(child, '01')) {
+                  style01.children.push(child);
+                }
+                else remaining.push(child);
+              });
+
+              // Post-process styles (Grouping loose layers, sorting)
+              const groupKeywords = ['Cheeks', 'HeadBase', 'FacialLine', 'Sweat', 'Pale', 'OptionB_Head'];
               [style01, style02].forEach(styleGroup => {
-                // 1. Group direct children (Cheeks, HeadBase, FacialLine)
-                groupKeywords.forEach(keyword => {
-                  wrapLooseLayers(styleGroup, keyword, keyword);
-                });
-
-                // 2. Deep clean: Check Mask_Ref for loose layers (Sweat)
-                // Mask_Ref is a group, so we need to recurse or check its children.
-                // Since wrapLooseLayers is recursive, we can just run it on the style group? 
-                // Wait, wrapLooseLayers is defined above but assumes 'node' structure.
-                // The wrapLooseLayers defined in line 38 is recursive.
-                // Let's just make sure we call it for 'Sweat' and 'Pale' which might be deep.
-                // Calling it on styleGroup should traverse down.
-
-                // 2. CORRECTION: Fix Z-Order. 
-                // HeadBase must be at the BOTTOM (first drawn).
-                // Eyes, Mouth, Cheeks etc should be on TOP.
-                // Simple sort: HeadBase -> Pale -> Others
+                groupKeywords.forEach(k => wrapLooseLayers(styleGroup, k, k));
+                // Sort Z-Order
                 styleGroup.children.sort((a, b) => {
-                  const nameA = (a.name || '').toLowerCase();
-                  const nameB = (b.name || '').toLowerCase();
-
-                  const getScore = (n) => {
-                    if (n.includes('headbase')) return 0; // Bottom
-                    if (n.includes('pale')) return 1;     // Above base
-                    if (n.includes('facialline')) return 900; // Very top
-                    return 500; // Middle (Eyes, Mouth, Cheeks, etc)
+                  const nA = (a.name || '').toLowerCase();
+                  const nB = (b.name || '').toLowerCase();
+                  const score = (n) => {
+                    if (n.includes('headbase')) return 0;
+                    if (n.includes('pale')) return 1;
+                    if (n.includes('facialline')) return 999;
+                    return 500;
                   };
-
-                  return getScore(nameA) - getScore(nameB);
+                  return score(nA) - score(nB);
                 });
               });
 
+              // Split mixed Mouth01 group that contains Mouth02_* layers (Hiro PSD quirk)
+              // Move those Mouth02 layers into a new Mouth02 group under Head 02.
+              const mouth01Group = style01.children.find(
+                g => (g.name || '').toLowerCase() === 'mouth01' && Array.isArray(g.children)
+              );
+              const hasMouth02GroupStyle2 = style02.children.some(
+                g => (g.name || '').toLowerCase() === 'mouth02'
+              );
+              if (mouth01Group && !hasMouth02GroupStyle2) {
+                const mouth02Layers = mouth01Group.children.filter(
+                  c => c.type === 'layer' && (c.name || '').toLowerCase().startsWith('mouth02')
+                );
+                if (mouth02Layers.length > 0) {
+                  // Remove from Mouth01
+                  mouth01Group.children = mouth01Group.children.filter(c => !mouth02Layers.includes(c));
+                  // Create Mouth02 group under style02
+                  style02.children.push({
+                    name: 'Mouth02',
+                    type: 'group',
+                    visible: true,
+                    opacity: 255,
+                    blend_mode: 'PASS_THROUGH',
+                    children: mouth02Layers
+                  });
+                }
+              }
+
+              // Move any pure-style head detail groups (Eyes/Sweat/Pale/Mask_Ref/FacialLine/Cheeks) that stayed in 'remaining'
+              // because their parent name lacked 01/02. This avoids Eyes02 showing up under Head01.
+              const headDetailKeywords = ['eyes', 'sweat', 'pale', 'mask_ref', 'facialline', 'cheeks'];
+              const movePureStyleGroups = (styleNum, targetGroup) => {
+                for (let i = remaining.length - 1; i >= 0; i--) {
+                  const g = remaining[i];
+                  if (!(g && g.type === 'group' && g.children)) continue;
+                  const n = (g.name || '').toLowerCase();
+                  if (!headDetailKeywords.some(k => n.includes(k))) continue;
+                  const checkChildrenPure = (node) => {
+                    const firstStyleToken = (s) => {
+                      const str = String(s || '');
+                      const idx01 = str.indexOf('01');
+                      const idx02 = str.indexOf('02');
+                      if (idx01 === -1 && idx02 === -1) return null;
+                      if (idx01 === -1) return '02';
+                      if (idx02 === -1) return '01';
+                      return idx01 < idx02 ? '01' : '02';
+                    };
+                    let has01 = false, has02 = false;
+                    const walk = (nd) => {
+                      const t = firstStyleToken(nd.name || '');
+                      if (t === '01') has01 = true;
+                      if (t === '02') has02 = true;
+                      (nd.children || []).forEach(walk);
+                    };
+                    walk(node);
+                    return styleNum === '01' ? (has01 && !has02) : (has02 && !has01);
+                  };
+                  if (checkChildrenPure(g)) {
+                    remaining.splice(i, 1);
+                    targetGroup.children.push(g);
+                  }
+                }
+              };
+              movePureStyleGroups('01', style01);
+              movePureStyleGroups('02', style02);
+
               headGroup.children.push(style01, style02);
 
-              // Place Head group after Body (usually first item) if possible
-              // or just append to filtered list
-              root.children = remainingChildren;
-              // Insert Head group at appropriate index (e.g. 1, after Body)
-              root.children.splice(1, 0, headGroup);
+              // Replace children: Remaining + New Head Group
+              // Try to keep Head Group relatively high in the list (e.g. index 0 or 1)
+              // If this is Root, typically Body is 0.
+              // If this is Mask_Ref1, Body might be 0.
+              // Let's look for Body index
+              const bodyIdx = remaining.findIndex(c => (c.name || '').toLowerCase().includes('body'));
+              if (bodyIdx !== -1) {
+                remaining.splice(bodyIdx + 1, 0, headGroup);
+                node.children = remaining;
+              } else {
+                node.children = [headGroup, ...remaining];
+              }
+            } else {
+              // Not found here, recurse into children groups
+              node.children.forEach(child => {
+                if (child.type === 'group' || child.children) {
+                  restructureHeadVariants(child);
+                }
+              });
             }
           };
 
@@ -245,6 +338,7 @@ function App() {
             wrapLooseLayers(data.root, 'Sweat', 'Sweat');
             wrapLooseLayers(data.root, 'FacialLine', 'FacialLine');
             wrapLooseLayers(data.root, 'Option', 'Option');
+            wrapLooseLayers(data.root, 'Mask', 'Mask'); // Expose Mask01 for Alisa
           }
         }
 
@@ -338,9 +432,22 @@ function App() {
         if (isArms) {
           if (armLId !== null) next[armLId] = null;
           if (armRId !== null) next[armRId] = null;
+          // auto select matching Option_Arms variant
+          const optId = findIdByPrefix('option_arms');
+          if (optId !== null) {
+            const optNode = modelData._idMap[optId];
+            const layers = (optNode.children || []).filter(c => c.type === 'layer');
+            // choose first matching prefix (Option_Arms01_*, Option_Arms02_*)
+            const targetPrefix = layerName && layerName.includes('01') ? 'option_arms01' : 'option_arms02';
+            const match = layers.find(l => (l.name || '').toLowerCase().startsWith(targetPrefix));
+            next[optId] = match ? match.name : null;
+          }
         }
         if (isArmL || isArmR) {
           if (armsId !== null) next[armsId] = null;
+          // selecting split arms clears option arms
+          const optId = findIdByPrefix('option_arms');
+          if (optId !== null) next[optId] = null;
         }
       }
       return next;
@@ -391,6 +498,13 @@ function App() {
               onChange={handleStateChange}
               background={background}
               setBackground={setBackground}
+              onExportHover={() => setIsExportHovering(true)}
+              onExportLeave={() => setIsExportHovering(false)}
+              onExportClick={() => {
+                if (viewerRef.current && viewerRef.current.exportImage) {
+                  viewerRef.current.exportImage();
+                }
+              }}
             />
           ) : (
             <div>Loading controls...</div>
@@ -406,11 +520,13 @@ function App() {
         ) : modelData ? (
           <div style={{ width: '100%', height: '100%' }}>
             <CharacterViewer
+              ref={viewerRef}
               charName={selectedChar}
               model={modelData}
               viewState={viewState}
               lastAsset={lastAsset}
               background={background}
+              isExportHovering={isExportHovering}
             />
           </div>
         ) : (

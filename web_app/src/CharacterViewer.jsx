@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useImperativeHandle, forwardRef } from 'react';
 import { Application, extend } from '@pixi/react';
 import { Assets, Container, Sprite, Graphics } from 'pixi.js';
 import * as PIXI from 'pixi.js';
@@ -6,6 +6,7 @@ import * as PIXI from 'pixi.js';
 // Register PixiJS components
 extend({ Container, Sprite, Graphics });
 
+// Map textual blend modes to PIXI constants
 // Map textual blend modes to PIXI constants
 const BLEND_MODE_MAP = {
     'normal': "normal",
@@ -18,6 +19,73 @@ const BLEND_MODE_MAP = {
 // Note: Pixi v8 handles blend modes as strings or objects. 
 // "multiply", "screen", "overlay" are standard. 
 // "soft-light" might be available or need custom.
+
+// Bridge to access Pixi App for export
+const ExportBridge = forwardRef(({ contentRef, background, model, app }, ref) => {
+    // const app = useApp(); // Removed: Passed via prop instead
+
+    useImperativeHandle(ref, () => ({
+        exportImage: async () => {
+            if (!contentRef.current || !app) return;
+
+            // 1. Determine Dimensions (Logical Size)
+            // Use model canvas size if available, else bounds
+            const width = model.canvas_size?.width || 2000;
+            const height = model.canvas_size?.height || 2000;
+
+            console.log('[Export] Starting export...', width, height);
+
+            // 2. Extract Character (High Res, Unscaled)
+            // contentRef points to the untransformed container holding the character
+            const renderer = app.renderer;
+
+            // Pixi 7/8 extract API
+            // extract.canvas(target, frame)
+            // We MUST specify the frame to avoid auto-cropping transparent pixels which shifts the character
+            const frame = new PIXI.Rectangle(0, 0, width, height);
+            const charCanvas = await renderer.extract.canvas({ target: contentRef.current, frame });
+
+            // 3. Composite on Final Canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+
+            // Draw Background
+            if (background === 'blue_sky') {
+                const grad = ctx.createLinearGradient(0, 0, 0, height);
+                grad.addColorStop(0, '#4facfe');
+                grad.addColorStop(1, '#00f2fe');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, width, height);
+            } else if (background === 'warm') {
+                const grad = ctx.createLinearGradient(0, 0, width, height);
+                // 120deg approx
+                grad.addColorStop(0, '#f093fb');
+                grad.addColorStop(1, '#f5576c');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, width, height);
+            } else {
+                // Transparent or White if None?
+                // User wants image. If None, keep transparent.
+            }
+
+            // Draw Character (Centered if sizes match, or just 0,0)
+            // contentRef extraction should match logical size
+            ctx.drawImage(charCanvas, 0, 0);
+
+            // 4. Download
+            const date = new Date().toISOString().replace(/[:.]/g, '-');
+            const link = document.createElement('a');
+            link.download = `manosaba_export_${date}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            console.log('[Export] Complete');
+        }
+    }));
+
+    return null;
+});
 // However, standard Pixi blend modes are Enums in PIXI.BLEND_MODES.
 // But in JSX <sprite blendMode={...}> usually accepts the value.
 // Let's use PIXI.BLEND_MODES values.
@@ -67,8 +135,9 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
     if (!node) return null;
 
     // Base visibility: layers are always allowed (selection controls visibility), groups respect PSD visible
-    // UNLESS the group is managed by viewState (has a selector), in which case we let the selection logic decide.
-    const isManaged = viewState[node._id] !== undefined;
+    // UNLESS the group is a selector (managed by viewState or only-layer group), then we let selection decide.
+    const isSelectorGroup = node.type === 'group' && node.children && node.children.length > 0 && !node.children.some(c => c.type === 'group');
+    const isManaged = viewState[node._id] !== undefined || isSelectorGroup;
     let isVisible = node.type === 'layer' ? true : (isManaged ? true : node.visible !== false);
     if (!isVisible && node.type !== 'layer') return null; // skip hidden groups
 
@@ -111,7 +180,7 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
             if (!selectedNode) return null;
 
             return (
-                <pixiContainer alpha={alpha}>
+                <container alpha={alpha}>
                     <RenderNode
                         node={selectedNode}
                         viewState={viewState}
@@ -121,7 +190,7 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
                         activeMergedArmName={activeMergedArmName}
                         activeArmRName={activeArmRName}
                     />
-                </pixiContainer>
+                </container>
             );
         }
 
@@ -167,9 +236,9 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
         }, [setBaseRef]);
 
         return (
-            <pixiContainer alpha={alpha} ref={containerRef}>
+            <container alpha={alpha} ref={containerRef}>
                 {rendered}
-            </pixiContainer>
+            </container>
         );
     }
 
@@ -372,21 +441,21 @@ const useElementSize = () => {
     return [refCallback, size];
 };
 
-const CharacterViewer = ({ charName, model, viewState, lastAsset, background }) => {
+const CharacterViewer = forwardRef(({ charName, model, viewState, lastAsset, background, isExportHovering }, ref) => {
     const [containerRef, parentSize] = useElementSize();
+    const [pixiApp, setPixiApp] = useState(null); // Capture Pixi App instance
     const idMap = model?._idMap || {};
-    // Check if ArmL or ArmR is explicitly selected
-    const hasSeparateArms = useMemo(() => {
-        const found = Object.entries(viewState).some(([k, v]) => {
-            const node = idMap[k];
-            if (!node) return false;
-            const n = (node.name || '').toLowerCase();
-            return v && (n.startsWith('arml') || n.startsWith('armr'));
-        });
-        console.log('[ArmsDebug] hasSeparateArms:', found, viewState);
-        return found;
-    }, [viewState, idMap]);
 
+    // Refs for Export
+    const contentRef = useRef(null);
+    const bridgeRef = useRef(null);
+
+    // Expose exportImage to parent
+    useImperativeHandle(ref, () => ({
+        exportImage: () => {
+            if (bridgeRef.current) bridgeRef.current.exportImage();
+        }
+    }));
     // Capture the specific Merged Arm name (e.g. "Arms01", "Arms02")
     const activeMergedArmName = useMemo(() => {
         const found = Object.entries(viewState).find(([k, v]) => {
@@ -398,8 +467,22 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset, background }) 
         // found is [id, selectedValueName]
         return found ? found[1] : null;
     }, [viewState, idMap]);
+    // Check if ArmL or ArmR is explicitly selected.
+    // IMPORTANT: if both merged+separate are (incorrectly) selected, merged wins to avoid hiding both.
+    const hasSeparateArms = useMemo(() => {
+        if (activeMergedArmName) return false;
+        const found = Object.entries(viewState).some(([k, v]) => {
+            const node = idMap[k];
+            if (!node) return false;
+            const n = (node.name || '').toLowerCase();
+            return v && (n.startsWith('arml') || n.startsWith('armr'));
+        });
+        console.log('[ArmsDebug] hasSeparateArms:', found, viewState);
+        return found;
+    }, [viewState, idMap, activeMergedArmName]);
     // Capture unique Separate Arm names (e.g. "ArmR01", "ArmR02") for Option matching
     const activeArmRName = useMemo(() => {
+        if (!hasSeparateArms) return null;
         const found = Object.entries(viewState).find(([k, v]) => {
             const node = idMap[k];
             if (!node) return false;
@@ -408,7 +491,7 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset, background }) 
             return v && n.startsWith('armr') && !n.includes('option');
         });
         return found ? found[1] : null;
-    }, [viewState, idMap]);
+    }, [viewState, idMap, hasSeparateArms]);
     const hasMergedArms = !!activeMergedArmName;
 
     // State for transform
@@ -594,27 +677,65 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset, background }) 
                     backgroundAlpha={0} // Fully transparent to let CSS gradient show
                     // backgroundColor={0xff00ff} // REMOVED debug pink
                     preference="webgl" // force WebGL on browsers where WebGPU fails silently
+                    onInit={setPixiApp} // Capture app instance
                 >
-                    <pixiContainer
+                    <ExportBridge
+                        ref={bridgeRef}
+                        contentRef={contentRef}
+                        background={background}
+                        model={model}
+                        app={pixiApp} // Pass app instance
+                    />
+                    <container
                         scale={transform.scale}
                         x={transform.x}
                         y={transform.y}
                     >
-                        {/* debug rect removed */}
-                        <RenderNode
-                            node={model.root}
-                            viewState={viewState}
-                            charName={charName}
-                            hasSeparateArms={hasSeparateArms}
-                            hasMergedArms={hasMergedArms}
-                            activeMergedArmName={activeMergedArmName}
-                            activeArmRName={activeArmRName}
-                        />
-                    </pixiContainer>
+                        {/* Wrap content in a stable container for export extraction */}
+                        <container ref={contentRef}>
+                            <RenderNode
+                                node={model.root}
+                                viewState={viewState}
+                                charName={charName}
+                                hasSeparateArms={hasSeparateArms}
+                                hasMergedArms={hasMergedArms}
+                                activeMergedArmName={activeMergedArmName}
+                                activeArmRName={activeArmRName}
+                            />
+                        </container>
+                    </container>
                 </Application>
+            )}
+
+            {/* Crop/Export Frame Overlay */}
+            {isExportHovering && model.canvas_size && (
+                <div style={{
+                    position: 'absolute',
+                    top: transform.y,
+                    left: transform.x,
+                    width: model.canvas_size.width * transform.scale,
+                    height: model.canvas_size.height * transform.scale,
+                    border: '4px dashed #ff4d4f',
+                    zIndex: 1000,
+                    pointerEvents: 'none', // click through
+                    boxShadow: '0 0 0 9999px rgba(0,0,0,0.5)' // Dim the rest
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: -30,
+                        left: 0,
+                        background: '#ff4d4f',
+                        color: 'white',
+                        padding: '2px 8px',
+                        fontSize: '12px',
+                        borderRadius: '4px 4px 0 0'
+                    }}>
+                        Export Crop Area (Original Resolution)
+                    </div>
+                </div>
             )}
         </div>
     );
-};
+}); // Close forwardRef
 
 export default CharacterViewer;
