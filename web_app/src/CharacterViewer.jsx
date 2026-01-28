@@ -63,7 +63,7 @@ const SpriteNode = React.forwardRef(({ texture, x, y, alpha, blendMode, mask }, 
     />
 ));
 
-const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = null, hasSeparateArms = false, hasMergedArms = false }) => {
+const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = null, hasSeparateArms = false, hasMergedArms = false, activeMergedArmName = null, activeArmRName = null }) => {
     if (!node) return null;
 
     // Base visibility: layers are always allowed (selection controls visibility), groups respect PSD visible
@@ -118,6 +118,8 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
                         charName={charName}
                         hasSeparateArms={hasSeparateArms}
                         hasMergedArms={hasMergedArms}
+                        activeMergedArmName={activeMergedArmName}
+                        activeArmRName={activeArmRName}
                     />
                 </pixiContainer>
             );
@@ -133,10 +135,11 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
                 clipBaseRef = refObj;
             };
 
-            // Non-layer resets clip chain
-            if (!isLayer) {
-                clipBaseRef = null;
-            }
+            // Non-layer resets clip chain? 
+            // NO! Groups (like Option_Arms) can be bases for clipping (e.g. Root Clipping Mask).
+            // if (!isLayer) {
+            //    clipBaseRef = null;
+            // }
 
             return (
                 <RenderNode
@@ -145,15 +148,26 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
                     viewState={viewState}
                     charName={charName}
                     maskRef={isClipping ? clipBaseRef : null}
-                    setBaseRef={!isClipping && isLayer ? captureBase : null}
+                    // Allow Groups to setBaseRef too
+                    setBaseRef={!isClipping ? captureBase : null}
                     hasSeparateArms={hasSeparateArms}
                     hasMergedArms={hasMergedArms}
+                    activeMergedArmName={activeMergedArmName}
+                    activeArmRName={activeArmRName}
                 />
             );
         });
 
+        const containerRef = useRef(null);
+        // If we were passed a setBaseRef, call it with our container
+        useEffect(() => {
+            if (setBaseRef && containerRef.current) {
+                setBaseRef(containerRef.current);
+            }
+        }, [setBaseRef]);
+
         return (
-            <pixiContainer alpha={alpha}>
+            <pixiContainer alpha={alpha} ref={containerRef}>
                 {rendered}
             </pixiContainer>
         );
@@ -174,10 +188,58 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
         // Hard block specific softlight/overlay glows that cause artifacts
         const hardBlock = (
             n.includes('blending01') ||
-            (n.includes('softlight') && (n.includes('arm') || n.includes('facial'))) ||
-            (n.includes('overlay') && n.includes('arm'))
+            n.includes('blending02') ||
+            n.includes('rootblending') || // Sherry
+            (n.includes('softlight') && (n.includes('arm') || n.includes('facial') || n.includes('root'))) ||
+            (n.includes('overlay') && (n.includes('arm') || n.includes('root')))
         );
         if (hardBlock) return null;
+
+        // Specific logic for AnAn's "Option_Arms" binding
+        if (n.includes('option_arms')) {
+            // Rule 1: If Separate Arms are active, hide merged options
+            if (hasSeparateArms) return null;
+            // Rule 2: If Merged Arms active, ensure option matches the active arm version
+            if (activeMergedArmName) {
+                // e.g. "Arms01" -> "01"
+                const armNumber = activeMergedArmName.replace(/[^0-9]/g, '');
+                // e.g. "Option_Arms02_06" -> "02"
+                const optionMatch = n.match(/arms(\d+)/i);
+                if (optionMatch) {
+                    const optionNumber = optionMatch[1];
+                    // If option number doesn't match arm number, hide it
+                    if (optionNumber !== armNumber) {
+                        // console.log('[ArmsDebug] Mismatch:', n, 'Target:', armNumber);
+                        return null;
+                    }
+                    if (n.includes('06')) console.log('[ArmsDebug] MATCH:', n, 'Render ALLOWED', 'Z:', node.zIndex);
+                }
+            } else {
+                // No merged arm selected? Hide options
+                return null;
+            }
+        }
+
+        // Specific logic for "Option_ArmR" binding (AnAn and others)
+        if (n.includes('option_armr')) {
+            // If Merged Arms active, these should probably be hidden? No, user didn't specify.
+            // Assumption: If merged arms active, hide separate arm options.
+            if (hasMergedArms) return null;
+
+            if (activeArmRName) {
+                // e.g. "ArmR01" -> "01"
+                const armNumber = activeArmRName.replace(/[^0-9]/g, '');
+                // e.g. "Option_ArmR02_Back" -> "02"
+                const optionMatch = n.match(/armr(\d+)/i);
+                if (optionMatch) {
+                    const optionNumber = optionMatch[1];
+                    if (optionNumber !== armNumber) return null;
+                }
+            } else {
+                // No separate arm selected? Hide options
+                return null;
+            }
+        }
 
         // Temporary mask fix: if clipping layer is Softlight (e.g., Facial01_Softlight) without a base, skip render to avoid glow
         const isSoftlightClip = node.clipping && node.blend_mode && node.blend_mode.toLowerCase() === 'soft_light';
@@ -310,7 +372,7 @@ const useElementSize = () => {
     return [refCallback, size];
 };
 
-const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
+const CharacterViewer = ({ charName, model, viewState, lastAsset, background }) => {
     const [containerRef, parentSize] = useElementSize();
     const idMap = model?._idMap || {};
     // Check if ArmL or ArmR is explicitly selected
@@ -325,19 +387,29 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
         return found;
     }, [viewState, idMap]);
 
-    // CHECK for Merged Arms selection (Priority)
-    const hasMergedArms = useMemo(() => {
-        const found = Object.entries(viewState).some(([k, v]) => {
+    // Capture the specific Merged Arm name (e.g. "Arms01", "Arms02")
+    const activeMergedArmName = useMemo(() => {
+        const found = Object.entries(viewState).find(([k, v]) => {
             const node = idMap[k];
             if (!node) return false;
             const n = (node.name || '').toLowerCase();
-            // Check if any "Arms" node has a value selected (and not just "None")
-            // Arms01 etc.
             return v && n.startsWith('arms') && !n.includes('arml') && !n.includes('armr');
         });
-        console.log('[ArmsDebug] hasMergedArms:', found);
-        return found;
+        // found is [id, selectedValueName]
+        return found ? found[1] : null;
     }, [viewState, idMap]);
+    // Capture unique Separate Arm names (e.g. "ArmR01", "ArmR02") for Option matching
+    const activeArmRName = useMemo(() => {
+        const found = Object.entries(viewState).find(([k, v]) => {
+            const node = idMap[k];
+            if (!node) return false;
+            const n = (node.name || '').toLowerCase();
+            // Startswith armr, not option, not merged arms
+            return v && n.startsWith('armr') && !n.includes('option');
+        });
+        return found ? found[1] : null;
+    }, [viewState, idMap]);
+    const hasMergedArms = !!activeMergedArmName;
 
     // State for transform
     const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
@@ -435,7 +507,11 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
                 height: '100%',
                 overflow: 'hidden',
                 cursor: isDragging ? 'grabbing' : 'grab',
-                background: '#fafafa',
+                background: background === 'blue_sky'
+                    ? 'linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%)'
+                    : background === 'warm'
+                        ? 'linear-gradient(120deg, #f093fb 0%, #f5576c 100%)'
+                        : '#fafafa',
                 touchAction: 'none',
                 position: 'relative' // For debug overlay
             }}
@@ -515,8 +591,8 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
                 <Application
                     width={parentSize.width}
                     height={parentSize.height}
-                    backgroundAlpha={0.1} // Slight background to see canvas
-                    backgroundColor={0xff00ff} // Debug Pink to confirm render
+                    backgroundAlpha={0} // Fully transparent to let CSS gradient show
+                    // backgroundColor={0xff00ff} // REMOVED debug pink
                     preference="webgl" // force WebGL on browsers where WebGPU fails silently
                 >
                     <pixiContainer
@@ -524,20 +600,15 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
                         x={transform.x}
                         y={transform.y}
                     >
-                        {/* Debug: draw a small rect to confirm PIXI renders */}
-                        <pixiGraphics
-                            draw={g => {
-                                g.clear();
-                                g.setFillStyle({ color: 0xff0000 });
-                                g.rect(0, 0, 50, 50);
-                                g.fill();
-                            }}
-                        />
+                        {/* debug rect removed */}
                         <RenderNode
                             node={model.root}
                             viewState={viewState}
                             charName={charName}
                             hasSeparateArms={hasSeparateArms}
+                            hasMergedArms={hasMergedArms}
+                            activeMergedArmName={activeMergedArmName}
+                            activeArmRName={activeArmRName}
                         />
                     </pixiContainer>
                 </Application>

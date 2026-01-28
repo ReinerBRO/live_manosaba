@@ -2,7 +2,11 @@ import React from 'react';
 import { Radio, Collapse } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 
-function ControlPanel({ model, viewState, onChange }) {
+const { Panel } = Collapse;
+
+
+
+function ControlPanel({ model, viewState, onChange, background, setBackground }) {
 
     // Decide if a node is a "Structure Group" (has subgroup) vs "Selector" (only layers)
     const isStructureGroup = (node) => {
@@ -11,6 +15,19 @@ function ControlPanel({ model, viewState, onChange }) {
 
     const renderNode = (node) => {
         if (!node.children || node.children.length === 0) return null;
+
+        // Helper: Find active merged arm name (e.g. "Arms01")
+        const activeMergedArmName = Object.entries(viewState).map(([k, v]) => {
+            // We don't have direct access to idMap here easily unless passed, 
+            // but we can iterate active viewState values.
+            // Actually, we need to know if the ID corresponds to an 'Arms' group.
+            // Since we don't have the full map, we might need to rely on the value string itself if unique enough?
+            // BETTER: traverse model once to build ID map or just search model.root?
+            // For now, let's rely on the fact that the value string (e.g. "Arms01") is unique enough.
+            return v;
+        }).find(v => v && v.toLowerCase().startsWith('arms') && !v.toLowerCase().includes('arml') && !v.toLowerCase().includes('armr'));
+
+        const activeArmRName = Object.entries(viewState).map(([k, v]) => v).find(v => v && v.toLowerCase().startsWith('armr') && !v.toLowerCase().includes('option'));
 
         // Filtering: hide nodes named "Shadow" or "Effect" or "HeadBase" (case-insensitive)
         const name = (node.name || '').toLowerCase();
@@ -74,7 +91,26 @@ function ControlPanel({ model, viewState, onChange }) {
                         style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}
                     >
                         <Radio.Button value="" style={{ fontSize: '12px' }}>None</Radio.Button>
-                        {layerChildren.map(child => (
+                        {layerChildren.filter(child => {
+                            const n = child.name.toLowerCase();
+                            if (node.name.toLowerCase().includes('option')) {
+                                // Filter Option_Arms
+                                if (n.includes('option_arms')) {
+                                    if (!activeMergedArmName) return false;
+                                    const armNumber = activeMergedArmName.replace(/[^0-9]/g, ''); // "Arms01" -> "01"
+                                    const optionMatch = n.match(/arms(\d+)/i);
+                                    if (optionMatch && optionMatch[1] !== armNumber) return false;
+                                }
+                                // Filter Option_ArmR
+                                if (n.includes('option_armr')) {
+                                    if (!activeArmRName) return false;
+                                    const armNumber = activeArmRName.replace(/[^0-9]/g, '');
+                                    const optionMatch = n.match(/armr(\d+)/i);
+                                    if (optionMatch && optionMatch[1] !== armNumber) return false;
+                                }
+                            }
+                            return true;
+                        }).map(child => (
                             <Radio.Button key={child._id} value={child.name} style={{ fontSize: '12px' }}>
                                 {child.name}
                             </Radio.Button>
@@ -120,6 +156,27 @@ function ControlPanel({ model, viewState, onChange }) {
         return (
             <div style={{ padding: '0 10px', overflowY: 'auto', height: '100%' }}>
                 <h3>Controls</h3>
+
+                {/* Background Selector */}
+                {setBackground && (
+                    <div style={{ marginBottom: 15 }}>
+                        <Collapse defaultActiveKey={['bg']} ghost size="small">
+                            <Panel header="Background / 背景" key="bg">
+                                <Radio.Group
+                                    value={background}
+                                    onChange={e => setBackground(e.target.value)}
+                                    buttonStyle="solid"
+                                    size="small"
+                                >
+                                    <Radio.Button value={null}>None</Radio.Button>
+                                    <Radio.Button value="blue_sky" style={{ background: 'linear-gradient(to right, #4facfe, #00f2fe)', color: 'white', border: 'none' }}>Sky</Radio.Button>
+                                    <Radio.Button value="warm" style={{ background: 'linear-gradient(to right, #f093fb, #f5576c)', color: 'white', border: 'none', marginLeft: 5 }}>Warm</Radio.Button>
+                                </Radio.Group>
+                            </Panel>
+                        </Collapse>
+                    </div>
+                )}
+
                 {model.root.children.map((child, idx) => (
                     <div key={`${child._id || idx}`}>
                         {renderNode(child)}

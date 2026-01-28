@@ -9,6 +9,7 @@ const { Header, Sider, Content } = Layout;
 function App() {
   const [characters, setCharacters] = useState([]);
   const [selectedChar, setSelectedChar] = useState(null);
+  const [background, setBackground] = useState(null);
   const [modelData, setModelData] = useState(null);
   const [viewState, setViewState] = useState({}); // keys are unique group paths -> selected layer name
   const [lastAsset, setLastAsset] = useState(null); // debug: {label, url}
@@ -59,6 +60,28 @@ function App() {
               blend_mode: 'PASS_THROUGH',
               children: targetLayers
             });
+            // FIX: If this is an Option group, force it to the end of the list (Top Z-Order)
+            // This ensures Option_Arms renders ON TOP of Arms/Body.
+            if (groupName.includes('Option')) {
+              const newGroup = node.children[node.children.length - 1];
+              // It's already at the end because we just pushed it? 
+              // Yes, BUT iterateChildren (recursion) might not have reached here yet.
+              // Actually this is fine for the newly created group.
+              // But wait, what if 'Arms' comes LATER in the list?
+              // We need to ensure Arms are BEFORE Option.
+              // Let's do a sort.
+              node.children.sort((a, b) => {
+                const na = (a.name || '').toLowerCase();
+                const nb = (b.name || '').toLowerCase();
+                const score = (name) => {
+                  if (name.includes('body')) return 0;
+                  if (name.includes('arms') && !name.includes('option')) return 10;
+                  if (name.includes('option')) return 100; // Top
+                  return 50;
+                };
+                return score(na) - score(nb);
+              });
+            }
           }
           node.children.forEach(c => wrapLooseLayers(c, prefix, groupName));
         };
@@ -221,6 +244,7 @@ function App() {
             wrapLooseLayers(data.root, 'Cheeks', 'Cheeks');
             wrapLooseLayers(data.root, 'Sweat', 'Sweat');
             wrapLooseLayers(data.root, 'FacialLine', 'FacialLine');
+            wrapLooseLayers(data.root, 'Option', 'Option');
           }
         }
 
@@ -365,6 +389,8 @@ function App() {
               model={modelData}
               viewState={viewState}
               onChange={handleStateChange}
+              background={background}
+              setBackground={setBackground}
             />
           ) : (
             <div>Loading controls...</div>
@@ -384,6 +410,7 @@ function App() {
               model={modelData}
               viewState={viewState}
               lastAsset={lastAsset}
+              background={background}
             />
           </div>
         ) : (
