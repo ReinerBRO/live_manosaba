@@ -63,38 +63,61 @@ const SpriteNode = React.forwardRef(({ texture, x, y, alpha, blendMode, mask }, 
     />
 ));
 
-const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = null, hasSeparateArms = false }) => {
+const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = null, hasSeparateArms = false, hasMergedArms = false }) => {
     if (!node) return null;
 
     // Base visibility: layers are always allowed (selection controls visibility), groups respect PSD visible
-    let isVisible = node.type === 'layer' ? true : node.visible !== false;
+    // UNLESS the group is managed by viewState (has a selector), in which case we let the selection logic decide.
+    const isManaged = viewState[node._id] !== undefined;
+    let isVisible = node.type === 'layer' ? true : (isManaged ? true : node.visible !== false);
     if (!isVisible && node.type !== 'layer') return null; // skip hidden groups
 
     const opacity = node.opacity !== undefined ? node.opacity : 255;
     const alpha = opacity / 255.0;
 
     if (node.type === 'group' || node.type === 'root') {
+        const n = (node.name || '').toLowerCase();
+        // STRONG EXCLUSION: If Merged Arms are active, DO NOT render ANY separate Arm groups/components
+        if (hasMergedArms && (n.includes('arml') || n.includes('armr'))) return null;
+        // Conversely, if Separate Arms are active, skip merged Arms group/layers
+        if (hasSeparateArms && n.startsWith('arms')) return null;
+
         const children = node.children || [];
         const layerChildren = children.filter(c => c.type === 'layer');
         const groupChildren = children.filter(c => c.type === 'group');
 
-        // Selector group: only layers, no sub-groups
-        if (layerChildren.length > 0 && groupChildren.length === 0) {
+        // Selector group: only layers, no sub-groups OR flagged Variant
+        if (node.isVariant || (layerChildren.length > 0 && groupChildren.length === 0)) {
             let selectedName = viewState[node._id];
-            if (selectedName === null) return null; // explicit None
+
+            // Determine pool of selectable children
+            // Variants select from their Subgroups (Style 01, Style 02)
+            // Normal selectors select from Layers
+            const pool = node.isVariant ? groupChildren : layerChildren;
+
+            if (selectedName === null && !node.isVariant) return null; // explicit None (Variants enforce one active)
+
             if (!selectedName) {
-                const visibleChild = layerChildren.find(c => c.visible);
-                selectedName = visibleChild ? visibleChild.name : layerChildren[0].name;
+                // If variant, default to first; if layer selector, default to visible or first
+                if (node.isVariant) {
+                    selectedName = pool[0]?.name;
+                } else {
+                    const visibleChild = pool.find(c => c.visible);
+                    selectedName = visibleChild ? visibleChild.name : pool[0]?.name;
+                }
             }
-            const selectedLayer = layerChildren.find(c => c.name === selectedName) || layerChildren[0];
-            if (!selectedLayer) return null;
+
+            const selectedNode = pool.find(c => c.name === selectedName) || pool[0];
+            if (!selectedNode) return null;
+
             return (
                 <pixiContainer alpha={alpha}>
                     <RenderNode
-                        node={selectedLayer}
+                        node={selectedNode}
                         viewState={viewState}
                         charName={charName}
                         hasSeparateArms={hasSeparateArms}
+                        hasMergedArms={hasMergedArms}
                     />
                 </pixiContainer>
             );
@@ -124,6 +147,7 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
                     maskRef={isClipping ? clipBaseRef : null}
                     setBaseRef={!isClipping && isLayer ? captureBase : null}
                     hasSeparateArms={hasSeparateArms}
+                    hasMergedArms={hasMergedArms}
                 />
             );
         });
@@ -135,12 +159,39 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
         );
     }
 
-    // Layer: always render (selected already handled by parent); ignore PSD visible flag here
+    // Layer: always render unless blocked by logic
     if (node.type === 'layer') {
-        const isMaskOnly = node.name && node.name.toLowerCase().includes('clippingmask');
-        const isMergedArms = node.name && node.name.toLowerCase().startsWith('arms');
+        const n = (node.name || '').toLowerCase();
+
+        // Priority: If Merged Arms selected, hide ALL Separate Arm components
+        if (hasMergedArms && (n.includes('arml') || n.includes('armr'))) return null;
+        // If Separate Arms selected, hide merged Arms layers
+        if (hasSeparateArms && n.startsWith('arms')) return null;
+        // Option_Arm* 仅在分臂打开时显示；Effect_*Arm* 永远不显示
+        if ((n.includes('option_arml') || n.includes('option_armr')) && !hasSeparateArms) return null;
+        // Global block: User requested NO effects to be rendered at all
+        if (n.includes('effect')) return null;
+        // Hard block specific softlight/overlay glows that cause artifacts
+        const hardBlock = (
+            n.includes('blending01') ||
+            (n.includes('softlight') && (n.includes('arm') || n.includes('facial'))) ||
+            (n.includes('overlay') && n.includes('arm'))
+        );
+        if (hardBlock) return null;
+
+        // Temporary mask fix: if clipping layer is Softlight (e.g., Facial01_Softlight) without a base, skip render to avoid glow
+        const isSoftlightClip = node.clipping && node.blend_mode && node.blend_mode.toLowerCase() === 'soft_light';
+
+        // REMOVED: The old check "if (isMergedArms && hasSeparateArms) return null;"
+        // We now prioritize Merged Arms.
+
+        const isMaskOnly = n.includes('clippingmask');
         if (isMaskOnly) return null;
-        if (isMergedArms && hasSeparateArms) return null; // avoid four arms
+
+        // Check if layer is explicitly hidden by viewState (e.g., "None" selected for a layer)
+        const isHiddenByViewState = viewState[node._id] === null;
+        if (isHiddenByViewState) return null;
+
         const fullPath = `/resources/characters/${charName}/PSD/${node.image}`;
         const ref = useRef(null);
         const texture = useTexture(fullPath);
@@ -156,11 +207,35 @@ const RenderNode = ({ node, viewState, charName, maskRef = null, setBaseRef = nu
         const x = node.offset ? node.offset.x : 0;
         const y = node.offset ? node.offset.y : 0;
 
+        const isClippingLayer = !!node.clipping && !isSoftlightClip;
+
         useEffect(() => {
-            if (setBaseRef) setBaseRef(ref);
-        }, [setBaseRef]);
+            if (setBaseRef && !isClippingLayer) setBaseRef(ref);
+        }, [setBaseRef, isClippingLayer]);
+
+        // If this is a clipping layer, attach it as mask to the baseRef
+        useEffect(() => {
+            if (isClippingLayer && maskRef?.current && ref.current) {
+                maskRef.current.mask = ref.current;
+            }
+        }, [isClippingLayer, maskRef, texture]);
 
         if (!texture) return null;
+
+        if (isClippingLayer) {
+            return (
+                <SpriteNode
+                    ref={ref}
+                    texture={texture}
+                    x={x}
+                    y={y}
+                    alpha={alpha}
+                    blendMode={blendMode}
+                    mask={null}
+                    visible={false}
+                />
+            );
+        }
 
         return (
             <SpriteNode
@@ -238,13 +313,30 @@ const useElementSize = () => {
 const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
     const [containerRef, parentSize] = useElementSize();
     const idMap = model?._idMap || {};
+    // Check if ArmL or ArmR is explicitly selected
     const hasSeparateArms = useMemo(() => {
-        return Object.entries(viewState).some(([k, v]) => {
+        const found = Object.entries(viewState).some(([k, v]) => {
             const node = idMap[k];
             if (!node) return false;
             const n = (node.name || '').toLowerCase();
             return v && (n.startsWith('arml') || n.startsWith('armr'));
         });
+        console.log('[ArmsDebug] hasSeparateArms:', found, viewState);
+        return found;
+    }, [viewState, idMap]);
+
+    // CHECK for Merged Arms selection (Priority)
+    const hasMergedArms = useMemo(() => {
+        const found = Object.entries(viewState).some(([k, v]) => {
+            const node = idMap[k];
+            if (!node) return false;
+            const n = (node.name || '').toLowerCase();
+            // Check if any "Arms" node has a value selected (and not just "None")
+            // Arms01 etc.
+            return v && n.startsWith('arms') && !n.includes('arml') && !n.includes('armr');
+        });
+        console.log('[ArmsDebug] hasMergedArms:', found);
+        return found;
     }, [viewState, idMap]);
 
     // State for transform
@@ -254,22 +346,33 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
 
     // Initialize scale
     useEffect(() => {
-        if (parentSize.width === 0 || !model) return;
+        if (parentSize.width === 0 || parentSize.height === 0 || !model) return;
 
-        const modelHeight = model.canvas_size.height;
-        const modelWidth = model.canvas_size.width;
+        // Debounce/Delay to ensure layout is stable (fixes 'initially huge' issue)
+        const timer = setTimeout(() => {
+            const canvas = model.canvas_size;
+            const modelWidth = canvas?.width || 2000;
+            const modelHeight = canvas?.height || 2000;
 
-        // Fit Height 90%
-        const startScale = (parentSize.height * 0.9) / modelHeight;
-        // Center
-        const startX = (parentSize.width - (modelWidth * startScale)) / 2;
-        const startY = (parentSize.height - (modelHeight * startScale)) / 2;
+            // "Contain" fit: use the smaller of the two ratios
+            const scaleX = (parentSize.width * 0.95) / modelWidth;
+            const scaleY = (parentSize.height * 0.95) / modelHeight;
+            const startScale = Math.min(scaleX, scaleY);
 
-        // Only reset if completely way off or init (simple check: scale is default 1)
-        // Or just let it reset on resize? Let's reset on model change only or init.
-        // For now, simple: dependency on model.
-        setTransform({ x: startX, y: startY, scale: startScale });
-    }, [model, parentSize.width, parentSize.height]); // Triggers on resize too, keeping it centered. User can drag away.
+            // Center
+            const startX = (parentSize.width - (modelWidth * startScale)) / 2;
+            const startY = (parentSize.height - (modelHeight * startScale)) / 2;
+
+            console.log('[CharacterViewer] Auto-Fit (Delayed):', {
+                parent: parentSize,
+                calc: { startScale, startX, startY }
+            });
+
+            setTransform({ x: startX, y: startY, scale: startScale });
+        }, 50);
+
+        return () => clearTimeout(timer);
+    }, [model, parentSize.width, parentSize.height]);
 
     const handleWheel = (e) => {
         const zoomSensitivity = 0.001;
@@ -367,6 +470,34 @@ const CharacterViewer = ({ charName, model, viewState, lastAsset }) => {
                         )}
                     </>
                 )}
+                <div style={{ marginTop: 8 }}>
+                    <button
+                        onClick={() => {
+                            if (!model || !parentSize.width) return;
+                            const canvas = model.canvas_size;
+                            const w = canvas?.width || 2000;
+                            const h = canvas?.height || 2000;
+                            const sx = (parentSize.width * 0.95) / w;
+                            const sy = (parentSize.height * 0.95) / h;
+                            const s = Math.min(sx, sy);
+                            setTransform({
+                                x: (parentSize.width - w * s) / 2,
+                                y: (parentSize.height - h * s) / 2,
+                                scale: s
+                            });
+                        }}
+                        style={{
+                            pointerEvents: 'auto',
+                            padding: '4px 8px',
+                            background: '#333',
+                            color: '#fff',
+                            border: '1px solid #555',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Reset View
+                    </button>
+                </div>
             </div>
             {/* Debug DOM image to verify asset path (shows last clicked asset if available) */}
             <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 9999, background: '#fff', padding: 4, border: '1px solid #ccc' }}>
