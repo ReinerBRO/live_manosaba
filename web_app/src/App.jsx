@@ -509,7 +509,7 @@ function App() {
   };
 
   const randomizeExpression = (targetChar) => {
-    if (!(targetChar === 'Ema' || targetChar === 'Hiro' || targetChar === 'Sherry' || targetChar === 'Hanna' || targetChar === 'AnAn')) return;
+    if (!(targetChar === 'Ema' || targetChar === 'Hiro' || targetChar === 'Sherry' || targetChar === 'Hanna' || targetChar === 'AnAn' || targetChar === 'Nanoka')) return;
     if (!modelData?.root || !modelData?._idMap) return;
 
     const idMap = modelData._idMap;

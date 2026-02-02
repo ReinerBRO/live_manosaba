@@ -157,8 +157,8 @@ function ControlPanel({ model, viewState, onChange, background, setBackground, o
             <div style={{ padding: '0 10px', overflowY: 'auto', height: '100%' }}>
                 <h3>Controls</h3>
 
-                {/* Randomizer (currently enabled for Ema/Hiro/Sherry/Hanna/AnAn) */}
-                {(charName === 'Ema' || charName === 'Hiro' || charName === 'Sherry' || charName === 'Hanna' || charName === 'AnAn') && typeof onRandomizeExpression === 'function' && (
+                {/* Randomizer (currently enabled for Ema/Hiro/Sherry/Hanna/AnAn/Nanoka) */}
+                {(charName === 'Ema' || charName === 'Hiro' || charName === 'Sherry' || charName === 'Hanna' || charName === 'AnAn' || charName === 'Nanoka') && typeof onRandomizeExpression === 'function' && (
                     <div style={{ marginBottom: 12 }}>
                         <Button type="primary" onClick={onRandomizeExpression} style={{ width: '100%' }}>
                             随机表情 / Random Expression ({charName})
