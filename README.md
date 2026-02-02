@@ -9,7 +9,7 @@
 - 组件开关/切换（Radio 菜单）
 - 背景切换（示例：蓝天渐变、暖色渐变）
 - 导出图片
-- 随机表情（当前支持：Ema / Hiro / Sherry / Hanna / AnAn）
+- 随机表情（当前支持：Ema / Hiro / Sherry / Hanna / AnAn / Nanoka）
 
 ---
 
@@ -55,7 +55,7 @@ npm run dev
 
 ## 随机表情说明
 
-随机按钮只在以下角色出现：`Ema` / `Hiro` / `Sherry` / `Hanna` / `AnAn`。
+随机按钮只在以下角色出现：`Ema` / `Hiro` / `Sherry` / `Hanna` / `AnAn` / `Nanoka`。
 
 随机逻辑要点：
 
