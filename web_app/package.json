@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.0",
     "@pixi/react": "^8.0.5",
     "antd": "^6.2.2",
     "lucide-react": "^0.563.0",
